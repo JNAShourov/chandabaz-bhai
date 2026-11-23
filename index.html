@@ -74,9 +74,27 @@
         overscroll-behavior-y: none;
       }
       .wrap { max-width: 980px; margin: 0 auto; padding: 0 12px 40px; width: 100%; }
-      /* Playing mode: masthead/ticker hide so the 16:9 stage gets the full phone screen */
+      /* Playing mode: masthead/ticker hide; the whole game fits exactly one screen —
+         compact HUD + bars on top, the stage flexes to fill the middle, and the
+         choices/diary strip below scrolls internally, so the playable scene
+         (road, shops, hero) is never pushed off-screen */
       body.playing .masthead, body.playing .ticker { display: none; }
-      body.playing .wrap { padding: 0 0 24px; max-width: 100%; }
+      body.playing .wrap {
+        max-width: 100%; height: 100dvh; max-height: 100dvh;
+        display: flex; flex-direction: column; padding: 0; overflow: hidden;
+      }
+      body.playing #screenGame.active { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+      body.playing .fs-bar, body.playing .day-banner, body.playing #padBox { flex: 0 0 auto; }
+      body.playing #stageBox { flex: 1 1 auto; min-height: 120px; display: flex; flex-direction: column; }
+      body.playing #stageBox:empty { display: none; }
+      body.playing .stage { flex: 1 1 auto; height: auto; min-height: 0; max-height: none; aspect-ratio: auto; margin-bottom: 0; }
+      body.playing #playArea { flex: 0 1 auto; max-height: 42%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+      body.playing #stageBox:empty ~ #playArea { flex: 1 1 auto; max-height: none; }
+      body.playing .log { flex: 0 1 auto; max-height: 20%; overflow-y: auto; }
+      /* Wide screens keep the cinematic 16:9 stage; phones let it fill the space */
+      @media (min-width: 700px) and (min-height: 541px) {
+        body.playing .stage { aspect-ratio: 16 / 9; flex: 0 1 auto; }
+      }
       body.playing { background: #0f0d09; }
       @media (prefers-color-scheme: light) { body.playing { background: #1a1710; } }
       /* Fullscreen bar */
@@ -139,8 +157,11 @@
         padding: 8px 8px; background: color-mix(in srgb, var(--bg) 88%, transparent);
         backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       }
-      body.playing .hud { background: rgba(15,13,9,.92); margin: 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+      body.playing .hud { background: rgba(15,13,9,.92); margin: 0; border-bottom: 1px solid rgba(255,255,255,.12); flex: 0 0 auto; }
       body.playing .hud .stat { box-shadow: none; }
+      body.playing .stat { padding: 5px 9px 6px; }
+      body.playing .stat .label { font-size: .64rem; }
+      body.playing .stat .value { font-size: .98rem; }
       .stat {
         background: var(--paper); border: 1.5px solid var(--line); border-radius: 12px;
         padding: 8px 10px 9px; box-shadow: var(--shadow);
@@ -214,11 +235,23 @@
       @media (orientation: portrait) and (max-width: 700px) {
         .stage { aspect-ratio: 16 / 9; min-height: 0; max-height: none; }
       }
-      /* Landscape phone: stage fills the whole viewport height — true fullscreen 16:9 */
+      /* Landscape phone: everything compacts so the stage keeps the screen —
+         slim HUD (no bars), one-line fullscreen bar, smaller shopfronts */
       @media (orientation: landscape) and (max-height: 540px) {
-        .stage { aspect-ratio: auto; height: calc(100dvh - 118px); max-height: none; min-height: 0; border-radius: 0; width: 100%; margin-left: 0; margin-right: 0; }
+        .stage { border-radius: 0; width: 100%; margin-left: 0; margin-right: 0; }
+        body.playing .stage { aspect-ratio: auto; flex: 1 1 auto; }
+        .hud { padding: 4px 6px; gap: 4px; }
+        .stat { padding: 4px 8px 5px; }
+        .stat .bar { display: none; }
+        .fs-bar { padding: 3px 8px 0; }
+        .fs-hint { display: none; }
+        .btn-fs { font-size: .8rem; padding: 5px 12px; min-height: 2rem; }
         .day-banner { margin: 2px 10px 4px; }
         .day-banner h2 { font-size: 1.1rem; }
+        .shopfront.world-shop { transform: translateX(-50%) scale(.85); transform-origin: 50% 100%; }
+        body.playing #playArea { max-height: 30%; }
+        body.playing .log { max-height: 14%; }
+        body.playing .card { padding: 12px 14px; }
         #padBox { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; margin: 0; padding: 0 10px calc(6px + env(safe-area-inset-bottom)); background: transparent; pointer-events: none; }
         #padBox .pad-row, #padBox .pad-hint { pointer-events: auto; }
         #padBox .pad-row { background: rgba(20,16,8,.82); backdrop-filter: blur(6px); border-color: rgba(255,255,255,.18); }
