@@ -97,7 +97,13 @@
       }
       body.playing .fs-bar, body.playing .day-banner { position: relative; z-index: 30; }
       body.playing .stage-label { top: 84px; }
-      body.playing .shop-panel { top: 88px; max-height: calc(100% - 98px); }
+      /* দোকানের প্যানেল নিচের ভাসমান বোতামগুলোর ওপরে শেষ হবে — টাকা নেওয়ার
+         অপশনগুলো যেন কখনো কোনো ওভারলের পেছনে ঢাকা না পড়ে, সবসময় টাচ করা যায় */
+      body.playing .shop-panel { top: 92px; bottom: 122px; max-height: none; }
+      /* রাস্তায় থাকা অবস্থায় নিচের বড় কার্ড/ডায়েরি ওভারলে পুরোপুরি বন্ধ —
+         ওগুলো সিনের নিচের অংশ আর দোকান-প্যানেলের বোতাম ঢেকে দিত, টাচ আটকে যেত।
+         দিনের হিসাব HUD আর ফেজ-লাইনেই দেখা যায়; ডায়েরি রাতের পালায় ফিরে আসে */
+      body.playing.street-on #playArea, body.playing.street-on #logBox { display: none; }
       body.playing #playArea {
         position: relative; z-index: 30; margin-top: auto; flex: 0 1 auto;
         max-height: 48%; overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -107,8 +113,7 @@
       body.playing #padBox:not([hidden]) ~ #playArea .card { margin-bottom: 124px; }
       body.playing #padBox:not([hidden]) ~ .log { margin-bottom: 124px; }
       body.playing #playArea .card {
-        background: color-mix(in srgb, var(--paper) 93%, transparent);
-        backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+        background: color-mix(in srgb, var(--paper) 97%, transparent);
       }
       body.playing .log { position: relative; z-index: 30; flex: 0 1 auto; max-height: 18%; overflow-y: auto; margin-top: 6px; }
       /* Playing: slim top chrome — ছোট বার, যাতে সিনটাই স্ক্রিনের বেশিরভাগ পায় */
@@ -129,11 +134,15 @@
         margin: 0; padding: 0 10px calc(6px + env(safe-area-inset-bottom));
         background: transparent; pointer-events: none;
       }
+      /* কন্ট্রোল বারের কোনো ব্যাকগ্রাউন্ড নেই — বারটা স্বচ্ছ, শুধু জয়স্টিক আর
+         লাফ বোতাম নিজেদের রঙ নিয়ে সিনের ওপর ভাসে; বারের বাকি জায়গায় টাচ
+         সিনের দিকেই যায়, কিছুই আটকায় না */
       body.playing #padBox .pad-row {
-        background: rgba(20, 16, 8, .55); border-color: rgba(255, 255, 255, .16);
-        backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-        pointer-events: auto;
+        background: transparent; border-color: transparent; box-shadow: none;
+        backdrop-filter: none; -webkit-backdrop-filter: none;
+        pointer-events: none;
       }
+      body.playing #padBox .joy, body.playing #padBox .pad-jump { pointer-events: auto; }
       body.playing .pad-hint { display: none; }
       /* সব স্ক্রিনেই সিন ফুল-ব্লিড — আলাদা 16:9 লেটারবক্স বাক্স আর নেই */
       body.playing { background: #0f0d09; }
@@ -657,7 +666,7 @@
       <section class="screen active" id="screenIntro">
         <div class="card intro">
           <h2>কাহিনীটা এমন…</h2>
-          <p>তুমি এলাকার উঠতি চাঁদাবাজ। পকেটে মাত্র <b>৳৫০০</b>, মাথায় বড় হওয়ার স্বপ্ন। আগামী <b>৩০ দিনে</b> দোকানপাট, ঠিকাদার আর ব্যবসায়ীদের কাছ থেকে "সালামি" আদায় করে গড়ে তুলতে হবে তোমার সাম্রাজ্য। এবার সত্যিকারের টাচ কন্ট্রোল — বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টেনে নিজে হেঁটে-দৌড়ে দোকানে যাবে, ডান পাশের বোতামে <b>লাফ</b> দেবে। দোকানদার থাকবে দোকানের <b>ভেতরে</b> — দোকানের সামনে দাঁড়ালেই পাশে প্যানেল উঠবে, সেখান থেকে টাচ করে ঠিক করবে টাকা কীভাবে নেবে। সবার মাথার ওপর ভাসবে মজার সব কথা, আর পুলিশ তাড়া করলে রাস্তার বাধা লাফিয়ে পেরিয়ে সত্যি সত্যি পালাতে হবে! গেমের সিন এখন <b>সত্যিকারের ফুল স্ক্রিনে</b> — ফোন সোজা ধরলেও, আড়াআড়ি ধরলেও সিনটা পুরো পর্দা জুড়ে থাকবে, অর্ধেক-অর্ধেক ব্যান্ডে না। উপরের বার আর নিচের কার্ড সিনের ওপর ভাসবে, জায়গা খাবে না। চাইলে উপরের "⛶ ফুল স্ক্রিন" বোতামে ব্রাউজারটাও ফুল স্ক্রিন করে নেওয়া যাবে।</p>
+          <p>তুমি এলাকার উঠতি চাঁদাবাজ। পকেটে মাত্র <b>৳৫০০</b>, মাথায় বড় হওয়ার স্বপ্ন। আগামী <b>৩০ দিনে</b> দোকানপাট, ঠিকাদার আর ব্যবসায়ীদের কাছ থেকে "সালামি" আদায় করে গড়ে তুলতে হবে তোমার সাম্রাজ্য। এবার সত্যিকারের টাচ কন্ট্রোল — বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টেনে নিজে হেঁটে-দৌড়ে দোকানে যাবে, ডান পাশের বোতামে <b>লাফ</b> দেবে। দোকানদার থাকবে দোকানের <b>ভেতরে</b> — দোকানের সামনে দাঁড়ালেই পাশে প্যানেল উঠবে, সেখান থেকে টাচ করে ঠিক করবে টাকা কীভাবে নেবে। সবার মাথার ওপর ভাসবে মজার সব কথা, আর পুলিশ তাড়া করলে রাস্তার বাধা লাফিয়ে পেরিয়ে সত্যি সত্যি পালাতে হবে! গেমের সিন এখন <b>সত্যিকারের ফুল স্ক্রিনে</b> — ফোন সোজা ধরলেও, আড়াআড়ি ধরলেও সিনটা পুরো পর্দা জুড়ে থাকবে, অর্ধেক-অর্ধেক ব্যান্ডে না। জয়স্টিক আর লাফ বোতাম কোনো ব্যাকগ্রাউন্ড-বার ছাড়াই সিনের ওপর ভাসবে — গেমের কিছুই ঢাকবে না, আর দোকানের প্যানেলের সব অপশন সবসময় টাচ করা যাবে। চাইলে উপরের "⛶ ফুল স্ক্রিন" বোতামে ব্রাউজারটাও ফুল স্ক্রিন করে নেওয়া যাবে।</p>
           <p>কিন্তু সাবধান — বেশি বাড়াবাড়ি করলেই পুলিশের নজর বাড়বে। নজর বাড়লেই ধাওয়া, ধরা পড়লেই সোজা হাজত। তখন ঘুষের টাকাও কাজে আসবে না… নাকি আসবে?</p>
           <ul class="rules">
             <li><span class="n">১</span><div><b>জয়স্টিক টেনে নিজে হেঁটে-দৌড়ে দোকানে যাও</b><span>প্রতিদিন ৩টা দোকান/ব্যবসা। বাম পাশের জয়স্টিক আঙুল দিয়ে টানো — অল্প টানলে হাঁটা, পুরো টানলে দৌড়। ডান পাশের সবুজ বোতামে লাফ। দোকানদার থাকবে দোকানের ভেতরে; সামনে দাঁড়ালেই ডান পাশে প্যানেল উঠবে — সেখান থেকে টাচ করে বেছে নাও টাকা কীভাবে নেবে: ভদ্রভাবে বলবে, চাপ দেবে, নাকি ছেড়ে দেবে। মাথার ওপরের কথাগুলো শোনো — দোকানদারের মুখের হাসি আর মনের কথা, দুটোই দেখা যাবে। সব তথ্য (দিন, ক্যাশ, প্রভাব, পুলিশের নজর) সবসময় স্ক্রিনের উপরে থাকবে।</span></div></li>
@@ -1086,6 +1095,7 @@
 
       function startStreet() {
         stopLoop();
+        document.body.classList.add("street-on");
         heroState.air = 0; heroState.vy = 0; heroState.hold = 0;
         $("phaseText").textContent = S.turn >= 3 ? "সব দোকান শেষ — এবার বাসায় যাও" : "রাস্তায় আছ · দোকান বাকি " + bn(3 - S.turn) + "টা";
         stageBox.innerHTML =
@@ -1386,6 +1396,7 @@
       function startChase(onDone) {
         S.chases++;
         stopLoop();
+        document.body.classList.remove("street-on");
         $("phaseText").textContent = "🚨 পুলিশের ধাওয়া!";
         stageBox.innerHTML =
           '<div class="stage chase" id="stage">' +
@@ -1509,6 +1520,7 @@
       function startJail(reason, onDone) {
         S.jailed++;
         stopLoop();
+        document.body.classList.remove("street-on");
         $("phaseText").textContent = "🔒 হাজত";
         var intro = reason === "raid"
           ? "ভোররাতে বাসার দরজায় ধাক্কা — রেইড! পুলিশের নজর ১০০ ছুঁয়ে গেছে, এবার আর ফাঁকি দেওয়ার উপায় নেই। জিপে তুলে সোজা থানার হাজতে।"
@@ -1582,6 +1594,7 @@
       /* ---------- Night phase: থাকা + ব্যবস্থাপনা ---------- */
       function nightPhase() {
         stopLoop();
+        document.body.classList.remove("street-on");
         $("phaseText").textContent = "রাতের থাকা ও হিসাব";
         stageBox.innerHTML =
           '<div class="stage home" id="stage">' +
@@ -1678,6 +1691,7 @@
 
       function showEvent(ev) {
         stopLoop();
+        document.body.classList.remove("street-on");
         $("phaseText").textContent = "হঠাৎ ঘটনা";
         hideStage();
         var html = '<div class="card event-card"><div class="e-tag">' + ev.tag + '</div><h3>' + ev.title + '</h3><p>' + ev.text + '</p><div class="choices">';
@@ -1724,6 +1738,7 @@
         clearTimers();
         stopLoop();
         document.body.classList.remove("playing");
+        document.body.classList.remove("street-on");
         if (document.fullscreenElement && document.exitFullscreen) { document.exitFullscreen().catch(function () {}); }
         hideStage();
         show("screenEnd");
