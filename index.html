@@ -1,0 +1,1763 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>চাঁদাবাজ ভাই</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@700;900&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2.25rem; }
+
+      :root {
+        --bg: #f4efe3;
+        --paper: #fffdf6;
+        --ink: #1d1a14;
+        --ink-soft: #5a5344;
+        --line: #d9d0ba;
+        --red: #b3232a;
+        --red-deep: #8c1a20;
+        --green: #0a6e4f;
+        --green-deep: #07573e;
+        --gold: #c98f12;
+        --gold-soft: #f3e3b3;
+        --heat: #c2480d;
+        --shadow: 0 10px 28px rgba(29, 26, 20, .14);
+        --card-radius: 14px;
+        --sky1: #a8d8ef;
+        --sky2: #fdf3d0;
+        --road: #5c5648;
+        --bldg-a: #e8b04b;
+        --bldg-b: #c96f4a;
+        --bldg-c: #7fa36b;
+        --bubble-bg: #ffffff;
+        --bubble-ink: #1d1a14;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #16130e;
+          --paper: #221e16;
+          --ink: #f0e9d8;
+          --ink-soft: #b3a98f;
+          --line: #3d372a;
+          --red: #e0484f;
+          --red-deep: #b3232a;
+          --green: #2fae83;
+          --green-deep: #0a6e4f;
+          --gold: #e0aa2e;
+          --gold-soft: #3a2f14;
+          --heat: #e06a2c;
+          --shadow: 0 10px 28px rgba(0, 0, 0, .5);
+          --sky1: #274b63;
+          --sky2: #4a3d28;
+          --road: #35302a;
+          --bldg-a: #8a6420;
+          --bldg-b: #7c4530;
+          --bldg-c: #44603c;
+          --bubble-bg: #fffdf6;
+          --bubble-ink: #1d1a14;
+        }
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; height: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Hind Siliguri", system-ui, sans-serif;
+        line-height: 1.55;
+        min-height: 100dvh;
+        overscroll-behavior-y: none;
+      }
+      .wrap { max-width: 980px; margin: 0 auto; padding: 0 12px 40px; width: 100%; }
+      /* Playing mode: masthead/ticker hide so the 16:9 stage gets the full phone screen */
+      body.playing .masthead, body.playing .ticker { display: none; }
+      body.playing .wrap { padding: 0 0 24px; max-width: 100%; }
+      body.playing { background: #0f0d09; }
+      @media (prefers-color-scheme: light) { body.playing { background: #1a1710; } }
+      /* Fullscreen bar */
+      .fs-bar {
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        padding: 8px 10px 0;
+      }
+      .btn-fs {
+        font-family: inherit; font-weight: 700; font-size: .92rem; cursor: pointer;
+        background: var(--gold); color: #231a02; border: 1.5px solid #a67c0a;
+        border-radius: 999px; padding: 8px 16px; min-height: 2.5rem;
+        box-shadow: 0 3px 0 #a67c0a;
+      }
+      .btn-fs:active { transform: translateY(2px); box-shadow: 0 1px 0 #a67c0a; }
+      .fs-hint { font-size: .8rem; color: #e8ddc2; text-align: right; line-height: 1.35; }
+      @media (prefers-color-scheme: dark) { .fs-hint { color: var(--ink-soft); } }
+      @media (max-width: 560px) {
+        .wrap { padding: 0 6px 28px; }
+        body.playing .wrap { padding: 0 0 16px; }
+        .fs-hint { font-size: .74rem; }
+      }
+
+      /* ---------- Masthead ---------- */
+      .masthead { text-align: center; padding: 26px 8px 6px; }
+      .masthead .kicker {
+        display: inline-block; font-size: .8rem; font-weight: 600; letter-spacing: .04em;
+        color: var(--red); border: 1.5px solid var(--red); padding: 2px 12px; border-radius: 999px;
+      }
+      .masthead h1 {
+        font-family: "Noto Serif Bengali", serif; font-weight: 900;
+        font-size: clamp(2.1rem, 8.5vw, 3.2rem); line-height: 1.15; margin: 10px 0 4px;
+      }
+      .masthead h1 .accent { color: var(--red); }
+      .masthead p { margin: 0; color: var(--ink-soft); font-size: 1rem; }
+
+      /* ---------- Headline ticker ---------- */
+      .ticker {
+        margin: 16px 0 0; background: var(--ink); color: var(--bg);
+        border-radius: 10px; padding: 10px 14px; font-size: .92rem; line-height: 1.5;
+        display: flex; gap: 4px 10px; align-items: flex-start; flex-wrap: wrap;
+      }
+      .ticker .tag { color: var(--gold); font-weight: 700; white-space: nowrap; flex: 0 0 auto; }
+      .ticker .headline {
+        flex: 1 1 220px; min-width: 0;
+        white-space: normal; overflow: visible; text-overflow: clip;
+        overflow-wrap: break-word;
+        transition: opacity .3s ease, transform .3s ease;
+      }
+      /* শিরোনাম বদলের মুহূর্তে হালকা ফেড/স্লাইড */
+      .ticker .headline.swap { opacity: 0; transform: translateY(5px); }
+      @media (max-width: 560px) {
+        .ticker { flex-direction: column; flex-wrap: nowrap; gap: 2px; padding: 10px 12px; }
+        .ticker .headline { flex: none; width: 100%; }
+      }
+
+      /* ---------- HUD — সব তথ্য সবসময় উপরে ---------- */
+      .hud {
+        position: sticky; top: 0; z-index: 50;
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 0;
+        padding: 8px 8px; background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      }
+      body.playing .hud { background: rgba(15,13,9,.92); margin: 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+      body.playing .hud .stat { box-shadow: none; }
+      .stat {
+        background: var(--paper); border: 1.5px solid var(--line); border-radius: 12px;
+        padding: 8px 10px 9px; box-shadow: var(--shadow);
+      }
+      .stat .label { font-size: .72rem; font-weight: 600; color: var(--ink-soft); letter-spacing: .02em; }
+      .stat .value { font-size: 1.08rem; font-weight: 700; line-height: 1.25; white-space: nowrap; }
+      .stat .bar { height: 6px; background: var(--line); border-radius: 99px; margin-top: 5px; overflow: hidden; }
+      .stat .bar i { display: block; height: 100%; border-radius: 99px; transition: width .5s ease; }
+      #barPower i { background: var(--green); }
+      #barHeat i { background: var(--heat); }
+      .stat.danger .value { color: var(--red); }
+      @media (max-width: 480px) {
+        .hud { grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 6px 6px; }
+        .stat { padding: 6px 7px 7px; border-radius: 9px; }
+        .stat .label { font-size: .62rem; }
+        .stat .value { font-size: .92rem; }
+        .stat .bar { height: 5px; margin-top: 3px; }
+      }
+
+      /* ---------- Screens ---------- */
+      .screen { display: none; }
+      .screen.active { display: block; }
+
+      .card {
+        background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--card-radius);
+        box-shadow: var(--shadow); padding: 20px;
+      }
+
+      /* ---------- Intro ---------- */
+      .intro h2 { font-family: "Noto Serif Bengali", serif; font-size: 1.45rem; margin: 0 0 8px; }
+      .intro p { margin: 0 0 12px; }
+      .rules { margin: 14px 0 4px; padding: 0; list-style: none; display: grid; gap: 10px; }
+      .rules li { display: flex; gap: 12px; align-items: flex-start; }
+      .rules .n {
+        flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%;
+        background: var(--red); color: #fff; font-weight: 700; display: grid; place-items: center; font-size: .95rem;
+      }
+      .rules b { display: block; }
+      .rules span { color: var(--ink-soft); font-size: .94rem; }
+
+      .btn {
+        font-family: inherit; font-weight: 700; font-size: 1rem; cursor: pointer;
+        border-radius: 10px; border: 1.5px solid transparent; padding: 10px 18px;
+        transition: transform .08s ease, background .15s ease;
+      }
+      .btn:active { transform: scale(.98); }
+      .btn-primary { background: var(--red); color: #fff; width: 100%; font-size: 1.12rem; padding: 13px 18px; margin-top: 16px; }
+      .btn-primary:hover { background: var(--red-deep); }
+      .disclaimer { font-size: .82rem; color: var(--ink-soft); text-align: center; margin-top: 14px; }
+
+      /* ---------- Day banner ---------- */
+      .day-banner { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 6px 10px 8px; }
+      .day-banner h2 { font-family: "Noto Serif Bengali", serif; font-size: 1.35rem; margin: 0; color: var(--ink); }
+      body.playing .day-banner h2 { color: #f5eeda; }
+      body.playing .day-banner .phase { color: #cfc4a3; }
+      .day-banner .phase { color: var(--ink-soft); font-size: .92rem; text-align: right; }
+
+      /* ================= STAGE — 16:9 ফুল-স্ক্রিন সিন ================= */
+      .stage {
+        position: relative; width: 100%; aspect-ratio: 16 / 9; height: auto;
+        max-height: calc(100dvh - 210px); min-height: 240px;
+        border-radius: 0; border: none; border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line);
+        box-shadow: var(--shadow);
+        overflow: hidden; margin-bottom: 10px;
+        background: linear-gradient(var(--sky1), var(--sky2) 62%, #e9d9ae 62.2%);
+      }
+      @media (min-width: 700px) {
+        .stage { border-radius: 14px; border: 1.5px solid var(--line); width: calc(100% - 16px); margin-left: 8px; margin-right: 8px; }
+      }
+      /* Portrait phone: 16:9 letterbox fills the width exactly */
+      @media (orientation: portrait) and (max-width: 700px) {
+        .stage { aspect-ratio: 16 / 9; min-height: 0; max-height: none; }
+      }
+      /* Landscape phone: stage fills the whole viewport height — true fullscreen 16:9 */
+      @media (orientation: landscape) and (max-height: 540px) {
+        .stage { aspect-ratio: auto; height: calc(100dvh - 118px); max-height: none; min-height: 0; border-radius: 0; width: 100%; margin-left: 0; margin-right: 0; }
+        .day-banner { margin: 2px 10px 4px; }
+        .day-banner h2 { font-size: 1.1rem; }
+        #padBox { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; margin: 0; padding: 0 10px calc(6px + env(safe-area-inset-bottom)); background: transparent; pointer-events: none; }
+        #padBox .pad-row, #padBox .pad-hint { pointer-events: auto; }
+        #padBox .pad-row { background: rgba(20,16,8,.82); backdrop-filter: blur(6px); border-color: rgba(255,255,255,.18); }
+        #padBox .pad-hint { display: none; }
+        .joy { width: 92px; height: 92px; }
+        .joy-knob { left: 24px; top: 24px; width: 44px; height: 44px; }
+        .pad-jump { width: 68px; height: 68px; }
+      }
+      /* Browser fullscreen: stage + controls fill the screen */
+      :fullscreen .wrap, :-webkit-full-screen .wrap { max-width: 100%; padding: 0; }
+      :fullscreen .stage { max-height: calc(100dvh - 150px); }
+      :fullscreen body, :fullscreen { background: #0f0d09; }
+      .stage .sun {
+        position: absolute; top: 16px; right: 22px; width: 42px; height: 42px; border-radius: 50%;
+        background: #ffd94d; box-shadow: 0 0 0 8px rgba(255, 217, 77, .25);
+      }
+      .bldgs { position: absolute; left: 0; right: 0; bottom: 62px; display: flex; align-items: flex-end; gap: 5px; padding: 0 6px; z-index: 1; }
+      .bldg { flex: 1; border-radius: 5px 5px 0 0; opacity: .85;
+        background-image: radial-gradient(rgba(255,255,255,.5) 2.2px, transparent 2.6px);
+        background-size: 17px 21px; background-position: 4px 6px; }
+      .bldg.a { background-color: var(--bldg-a); }
+      .bldg.b { background-color: var(--bldg-b); }
+      .bldg.c { background-color: var(--bldg-c); }
+      .shopfront {
+        position: absolute; left: 50%; transform: translateX(-50%); bottom: 62px; z-index: 2;
+        width: min(300px, 62%); text-align: center;
+      }
+      .shopfront .sign {
+        background: var(--red); color: #fff; font-weight: 700; font-size: .98rem;
+        padding: 5px 8px; border-radius: 8px 8px 0 0; border: 2px solid rgba(0,0,0,.18); border-bottom: none;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .shopfront .awning {
+        height: 16px;
+        background: repeating-linear-gradient(90deg, #fff 0 16px, var(--red) 16px 32px);
+        border: 2px solid rgba(0,0,0,.18); border-top: none; border-radius: 0 0 6px 6px;
+      }
+      .shopfront .front {
+        height: 74px; background: #f7ead0; border: 2px solid rgba(0,0,0,.18); border-top: none;
+        display: flex; align-items: flex-end; justify-content: space-between; padding: 0 14px;
+      }
+      @media (prefers-color-scheme: dark) { .shopfront .front { background: #4a3d28; } }
+      .shopfront .win { width: 52px; height: 40px; background: #9fd3e8; border: 2.5px solid #6b4f2a; border-bottom: none; border-radius: 4px 4px 0 0; }
+      .shopfront .door { width: 40px; height: 56px; background: #6b4f2a; border-radius: 4px 4px 0 0; }
+      .road {
+        position: absolute; left: 0; right: 0; bottom: 0; height: 62px; z-index: 3;
+        background: var(--road);
+        background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.55) 0 34px, transparent 34px 74px);
+        background-size: 74px 5px; background-repeat: repeat-x; background-position: 0 30px;
+      }
+      .road::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 9px; background: #b8ab8d; }
+      .stage-label {
+        position: absolute; top: 10px; left: 12px; z-index: 6;
+        background: rgba(20, 16, 8, .78); color: #ffe9a8; font-size: .8rem; font-weight: 700;
+        padding: 3px 11px; border-radius: 999px;
+      }
+
+      /* ---------- Actors & speech bubbles ---------- */
+      .actor { position: absolute; bottom: 40px; width: 62px; z-index: 5; transition: left 1.15s ease-in-out; }
+      .actor svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 3px 3px rgba(0,0,0,.25)); }
+      .actor .who-tag {
+        position: absolute; left: 50%; transform: translateX(-50%); bottom: -19px;
+        font-size: .68rem; font-weight: 700; background: rgba(20,16,8,.8); color: #fff;
+        padding: 1px 8px; border-radius: 999px; white-space: nowrap;
+      }
+      .bubble {
+        position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translateX(-50%) scale(.7);
+        width: max-content; max-width: 185px; background: var(--bubble-bg); color: var(--bubble-ink);
+        font-size: .8rem; font-weight: 600; line-height: 1.35; text-align: center;
+        padding: 7px 10px; border-radius: 13px; border: 2px solid rgba(0,0,0,.15);
+        opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease; z-index: 9;
+      }
+      .bubble::after {
+        content: ""; position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%);
+        border: 8px solid transparent; border-top-color: var(--bubble-bg); border-bottom: none;
+      }
+      .bubble.show { opacity: 1; transform: translateX(-50%) scale(1); }
+      .bubble.think { border-radius: 16px; font-style: italic; }
+      .bubble.r { left: auto; right: -10px; transform: scale(.7); transform-origin: bottom right; }
+      .bubble.r.show { transform: scale(1); }
+      .bubble.r::after { left: auto; right: 24px; transform: none; }
+      .stage.chase .actor { transition: none; }
+      .actor.walking svg { animation: bob .28s ease-in-out infinite alternate; }
+      .actor.running svg { animation: bob .15s ease-in-out infinite alternate; }
+      @keyframes bob { from { transform: translateY(0) rotate(-1.6deg); } to { transform: translateY(-5px) rotate(1.6deg); } }
+
+      /* ---------- Chase stage ---------- */
+      .stage.chase { background: linear-gradient(var(--sky1), var(--sky2) 62%, #e9d9ae 62.2%); }
+      .stage.chase .road { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.55) 0 34px, transparent 34px 74px); animation: roadmove .3s linear infinite; }
+      @keyframes roadmove { from { background-position: 0 30px; } to { background-position: -74px 30px; } }
+      .stage.chase .bldgs { animation: bldgmove 1.1s linear infinite; }
+      @keyframes bldgmove { from { transform: translateX(0); } to { transform: translateX(-14px); } }
+      .alley {
+        position: absolute; right: 0; bottom: 62px; width: 52px; height: 128px; z-index: 2;
+        background: #3d372a; color: #ffe9a8; font-size: .68rem; font-weight: 700;
+        writing-mode: vertical-rl; display: grid; place-items: center; border-radius: 6px 0 0 0;
+      }
+      .chase-hud { display: grid; gap: 8px; margin-bottom: 12px; }
+      .meter { background: var(--paper); border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+      .meter .m-label { font-size: .8rem; font-weight: 700; display: flex; justify-content: space-between; }
+      .meter .m-bar { height: 10px; background: var(--line); border-radius: 99px; margin-top: 5px; overflow: hidden; }
+      .meter .m-bar i { display: block; height: 100%; border-radius: 99px; }
+      #mSafe i { background: var(--green); }
+      #mGap i { background: var(--heat); }
+      .btn-run {
+        width: 100%; font-size: 1.25rem; padding: 16px; background: var(--red); color: #fff;
+        border: none; border-radius: 12px; font-family: inherit; font-weight: 700; cursor: pointer;
+        box-shadow: 0 5px 0 var(--red-deep);
+      }
+      .btn-run:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--red-deep); }
+
+      /* ---------- Jail stage ---------- */
+      .stage.jail { background: linear-gradient(#565d6b, #3c414d 70%); }
+      .stage.jail .cell-window {
+        position: absolute; top: 26px; left: 34px; width: 74px; height: 62px; z-index: 1;
+        background: #aebfd4; border: 5px solid #22262e; border-radius: 4px;
+        background-image: linear-gradient(90deg, transparent 46%, #22262e 46%, #22262e 54%, transparent 54%), linear-gradient(transparent 46%, #22262e 46%, #22262e 54%, transparent 54%);
+      }
+      .stage.jail .floor { position: absolute; left: 0; right: 0; bottom: 0; height: 56px; background: #2c3038; z-index: 1; }
+      .stage.jail .bedroll {
+        position: absolute; bottom: 48px; left: 18px; width: 128px; height: 20px; z-index: 2;
+        background: #7a4a3a; border-radius: 8px; border: 2px solid rgba(0,0,0,.3);
+      }
+      .bars {
+        position: absolute; inset: 0; z-index: 7; pointer-events: none;
+        background: repeating-linear-gradient(90deg, transparent 0 30px, #191c22 30px 40px, #4c5260 40px 43px, transparent 43px 73px);
+      }
+      .bars::before, .bars::after { content: ""; position: absolute; left: 0; right: 0; height: 14px; background: #191c22; }
+      .bars::before { top: 34px; } .bars::after { bottom: 74px; }
+
+      /* ---------- Home (night stay) stage ---------- */
+      .stage.home { background: linear-gradient(#232c47, #171e33 70%); }
+      .stage.home .moonwin {
+        position: absolute; top: 22px; right: 30px; width: 92px; height: 84px; z-index: 1;
+        background: #10182c; border: 5px solid #0b0f1c; border-radius: 6px; overflow: hidden;
+      }
+      .stage.home .moonwin::before { content: ""; position: absolute; top: 10px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: #f5eeda; box-shadow: 0 0 14px rgba(245,238,218,.7); }
+      .stage.home .moonwin::after { content: "✦ ✦  ✦"; position: absolute; top: 8px; left: 8px; color: #cdd8f5; font-size: .6rem; letter-spacing: 3px; }
+      .stage.home .poster {
+        position: absolute; top: 30px; left: 26px; z-index: 1; transform: rotate(-3deg);
+        background: #f3e3b3; color: #5a3c08; font-weight: 700; font-size: .78rem; text-align: center;
+        padding: 8px 10px; border-radius: 3px; box-shadow: 0 3px 8px rgba(0,0,0,.4); max-width: 128px;
+      }
+      .stage.home .floor { position: absolute; left: 0; right: 0; bottom: 0; height: 58px; background: #241a12; z-index: 1; }
+      .stage.home .bed {
+        position: absolute; bottom: 44px; left: 22px; width: 190px; height: 30px; z-index: 2;
+        background: #7c4530; border-radius: 8px; border: 2px solid rgba(0,0,0,.35);
+      }
+      .stage.home .bed::before { content: ""; position: absolute; left: 8px; top: -11px; width: 44px; height: 17px; background: #e8e2d2; border-radius: 6px; }
+      .stage.home .bed::after { content: ""; position: absolute; right: 0; top: -7px; width: 128px; height: 14px; background: #2fae83; border-radius: 6px; opacity: .85; }
+
+      /* ---------- Target card ---------- */
+      .demand {
+        margin: 0 0 4px; padding: 10px 14px; border-radius: 10px;
+        background: var(--gold-soft); display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+      }
+      .demand .d-label { font-size: .88rem; font-weight: 600; }
+      .demand .d-amt { font-size: 1.3rem; font-weight: 700; color: var(--red-deep); white-space: nowrap; }
+      @media (prefers-color-scheme: dark) { .demand .d-amt { color: var(--gold); } }
+      .scene { color: var(--ink); margin: 12px 0 4px; }
+      .risk-note { font-size: .86rem; color: var(--ink-soft); margin: 6px 0 0; }
+
+      .choices { display: grid; gap: 10px; margin-top: 16px; }
+      .choice {
+        text-align: left; font-family: inherit; cursor: pointer; width: 100%;
+        background: var(--paper); border: 1.5px solid var(--line); border-radius: 12px;
+        padding: 12px 14px; color: var(--ink); transition: border-color .15s ease, background .15s ease;
+      }
+      .choice:hover:not(:disabled) { border-color: var(--ink-soft); }
+      .choice:disabled { opacity: .55; cursor: default; }
+      .choice .c-title { font-weight: 700; font-size: 1.02rem; display: flex; justify-content: space-between; gap: 8px; }
+      .choice .c-title .tag { font-size: .78rem; font-weight: 600; padding: 1px 9px; border-radius: 999px; white-space: nowrap; align-self: center; }
+      .tag-safe { background: var(--green); color: #fff; }
+      .tag-risk { background: var(--red); color: #fff; }
+      .tag-mid { background: var(--gold); color: #231a02; }
+      .choice .c-desc { font-size: .9rem; color: var(--ink-soft); margin-top: 2px; }
+
+      /* ---------- Result ---------- */
+      .result-box { margin-top: 16px; border-radius: 12px; padding: 14px 16px; border: 1.5px dashed var(--line); display: none; }
+      .result-box.show { display: block; }
+      .result-box.good { border-color: var(--green); }
+      .result-box.bad { border-color: var(--red); }
+      .result-box .r-text { margin: 0 0 8px; }
+      .deltas { display: flex; flex-wrap: wrap; gap: 6px; }
+      .delta { font-size: .84rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--line); color: var(--ink); }
+      .delta.up { background: var(--green); color: #fff; }
+      .delta.down { background: var(--red); color: #fff; }
+      .delta.heat-up { background: var(--heat); color: #fff; }
+      .next-btn { margin-top: 14px; width: 100%; background: var(--ink); color: var(--bg); }
+      .next-btn:hover { opacity: .88; }
+
+      /* ---------- Night / shop ---------- */
+      .night h2 { font-family: "Noto Serif Bengali", serif; font-size: 1.4rem; margin: 0 0 6px; }
+      .night .sub { color: var(--ink-soft); margin: 0 0 14px; }
+      .night h3 { font-size: 1.02rem; margin: 18px 0 8px; }
+      .shop-item {
+        display: flex; gap: 12px; align-items: center; width: 100%; text-align: left;
+        font-family: inherit; cursor: pointer; background: var(--paper);
+        border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; color: var(--ink);
+      }
+      .shop-item:hover:not(:disabled) { border-color: var(--ink-soft); }
+      .shop-item:disabled { opacity: .45; cursor: not-allowed; }
+      .shop-item .s-icon { font-size: 1.6rem; flex: 0 0 auto; width: 44px; text-align: center; }
+      .shop-item .s-body { flex: 1 1 auto; }
+      .shop-item .s-title { font-weight: 700; }
+      .shop-item .s-desc { font-size: .88rem; color: var(--ink-soft); }
+      .shop-item .s-price { font-weight: 700; color: var(--red-deep); white-space: nowrap; }
+      @media (prefers-color-scheme: dark) { .shop-item .s-price { color: var(--gold); } }
+      .shop-list { display: grid; gap: 10px; }
+      .summary-line { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed var(--line); font-size: .98rem; }
+      .summary-line:last-of-type { border-bottom: none; }
+      .summary-line b { white-space: nowrap; }
+
+      /* ---------- Event ---------- */
+      .event-card { border-color: var(--gold); border-width: 2px; }
+      .event-card .e-tag { color: var(--gold); font-weight: 700; font-size: .85rem; letter-spacing: .03em; }
+      .event-card h3 { font-family: "Noto Serif Bengali", serif; font-size: 1.35rem; margin: 4px 0 8px; }
+      .event-card p { margin: 0 0 6px; }
+
+      /* ---------- Log ---------- */
+      .log { margin-top: 18px; }
+      .log h3 { font-size: .95rem; margin: 0 0 8px; color: var(--ink-soft); letter-spacing: .02em; }
+      .log ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+      .log li {
+        background: var(--paper); border: 1px solid var(--line); border-radius: 9px;
+        padding: 8px 12px; font-size: .9rem; color: var(--ink-soft);
+      }
+      .log li b { color: var(--ink); }
+
+      /* ---------- End ---------- */
+      .end-card { text-align: center; }
+      .end-card .e-emoji { font-size: 3.4rem; line-height: 1; }
+      .end-card h2 { font-family: "Noto Serif Bengali", serif; font-size: 1.9rem; margin: 10px 0 6px; }
+      .end-card .rank {
+        display: inline-block; background: var(--gold-soft); border: 1.5px solid var(--gold);
+        color: var(--ink); font-weight: 700; padding: 4px 16px; border-radius: 999px; margin: 6px 0 12px;
+      }
+      .end-stats { text-align: left; margin: 14px 0 4px; }
+      .end-card p { color: var(--ink-soft); }
+
+      /* Playing mode: content below the 16:9 stage keeps side padding */
+      body.playing #playArea, body.playing .log { margin-left: 8px; margin-right: 8px; }
+      body.playing #padBox { margin-left: 8px; margin-right: 8px; }
+      @media (orientation: landscape) and (max-height: 540px) {
+        body.playing #padBox { margin-left: 0; margin-right: 0; }
+      }
+
+      /* ---------- Touch controls: joystick + jump ---------- */
+      #padBox { position: sticky; bottom: 10px; z-index: 40; margin-bottom: 14px; }
+      .pad-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        background: var(--paper); border: 1.5px solid var(--line); border-radius: 16px;
+        box-shadow: var(--shadow); padding: 10px 14px;
+      }
+      .joy {
+        position: relative; width: 116px; height: 116px; border-radius: 50%;
+        background: radial-gradient(circle at 50% 42%, var(--bg) 0 56%, var(--gold-soft) 100%);
+        border: 2px solid var(--line); touch-action: none; cursor: grab;
+        user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+      }
+      .joy::before { content: "◀"; position: absolute; top: 50%; left: 7px; transform: translateY(-50%); font-size: .78rem; color: var(--ink-soft); }
+      .joy::after { content: "▶"; position: absolute; top: 50%; right: 7px; transform: translateY(-50%); font-size: .78rem; color: var(--ink-soft); }
+      .joy-knob {
+        position: absolute; left: 32px; top: 32px; width: 52px; height: 52px; border-radius: 50%;
+        background: var(--red); border: 2px solid var(--red-deep); color: #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,.3), inset 0 2px 5px rgba(255,255,255,.35);
+        display: grid; place-items: center; font-size: .82rem; font-weight: 700; pointer-events: none;
+      }
+      .joy-label { text-align: center; font-size: .72rem; font-weight: 700; color: var(--ink-soft); margin-top: 5px; }
+      .pad-jump {
+        font-family: inherit; font-weight: 700; cursor: pointer; flex: 0 0 auto;
+        width: 84px; height: 84px; border-radius: 50%;
+        background: var(--green); border: 2px solid var(--green-deep); color: #fff;
+        font-size: 1rem; line-height: 1.2; box-shadow: 0 5px 0 var(--green-deep);
+        touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+      }
+      .pad-jump:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--green-deep); }
+      .pad-hint { text-align: center; font-size: .8rem; color: var(--ink-soft); margin: 6px 2px 0; }
+      #padBox.chase .joy-wrap { display: none; }
+      #padBox.chase .pad-row { justify-content: center; }
+      #padBox.chase .pad-jump { width: min(320px, 82%); height: 68px; border-radius: 16px; font-size: 1.3rem; background: var(--red); border-color: var(--red-deep); box-shadow: 0 5px 0 var(--red-deep); }
+
+      /* ---------- Shop side panel (দোকানের সামনে গেলেই ওঠে) ---------- */
+      .shop-panel {
+        position: absolute; top: 42px; right: 8px; z-index: 12;
+        width: min(270px, 76%); max-height: calc(100% - 52px); overflow-y: auto;
+        background: var(--paper); color: var(--ink); border: 1.5px solid var(--line);
+        border-radius: 14px; box-shadow: var(--shadow); padding: 12px;
+        transform: translateX(calc(100% + 16px)); transition: transform .3s ease;
+      }
+      .shop-panel.show { transform: translateX(0); }
+      .shop-panel h4 { margin: 0 0 2px; font-family: "Noto Serif Bengali", serif; font-size: 1.02rem; }
+      .shop-panel .sp-who { font-size: .8rem; color: var(--ink-soft); margin: 0 0 8px; }
+      .shop-panel .demand { padding: 7px 10px; margin-bottom: 8px; }
+      .shop-panel .demand .d-amt { font-size: 1.12rem; }
+      .shop-panel .scene { font-size: .88rem; margin: 0 0 4px; }
+      .shop-panel .risk-note { font-size: .78rem; }
+      .shop-panel .ask { font-weight: 700; font-size: .92rem; margin: 10px 0 0; }
+      .shop-panel .choices { gap: 8px; margin-top: 8px; }
+      .shop-panel .choice { padding: 9px 11px; border-radius: 10px; }
+      .shop-panel .choice .c-title { font-size: .94rem; }
+      .shop-panel .choice .c-desc { font-size: .82rem; }
+      .shop-panel .result-box { margin-top: 10px; padding: 10px 12px; }
+
+      /* ---------- Shopkeeper inside the shop ---------- */
+      .actor.inside { bottom: 63px; width: 54px; z-index: 3; }
+      .world-shop .front { position: relative; justify-content: center; }
+      .world-shop .win { position: absolute; left: 14px; bottom: 0; }
+      .world-shop .door { width: 50px; background: #38260f; box-shadow: inset 0 0 0 3px #6b4f2a; }
+      .world { position: absolute; top: 0; bottom: 0; left: 0; will-change: transform; }
+      .actor.free { transition: none; }
+      .world-shop { width: 232px; }
+      .shopfront.done { opacity: .55; filter: grayscale(.45); }
+      .shop-badge {
+        position: absolute; top: -25px; left: 50%; transform: translateX(-50%); z-index: 3;
+        background: var(--green); color: #fff; font-size: .7rem; font-weight: 700;
+        padding: 1px 9px; border-radius: 999px; white-space: nowrap;
+      }
+      .home-door { position: absolute; bottom: 62px; width: 88px; margin-left: -44px; text-align: center; z-index: 2; }
+      .home-door .h-sign {
+        background: var(--ink-soft); color: #fff; font-weight: 700; font-size: .78rem;
+        padding: 3px 4px; border-radius: 8px 8px 0 0; border: 2px solid rgba(0,0,0,.18); border-bottom: none; white-space: nowrap;
+      }
+      .home-door .h-door { height: 80px; background: #6b4f2a; border: 2px solid rgba(0,0,0,.25); border-top: none; position: relative; }
+      .home-door .h-door::after { content: ""; position: absolute; right: 9px; top: 40px; width: 7px; height: 7px; border-radius: 50%; background: #ffd94d; }
+      .home-door.active .h-sign { background: var(--gold); color: #231a02; }
+      .home-door.active { filter: drop-shadow(0 0 12px rgba(255, 217, 77, .85)); }
+      .obstacle { position: absolute; bottom: 2px; z-index: 4; text-align: center; line-height: 1.1; pointer-events: none; }
+      .obstacle .o-emoji { display: block; font-size: 2rem; }
+      .obstacle .o-label { font-size: .6rem; font-weight: 700; background: rgba(20,16,8,.78); color: #fff; padding: 0 5px; border-radius: 999px; }
+      .actor.hit svg { animation: shake .3s ease-in-out 2; }
+      @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px) rotate(-5deg); } 75% { transform: translateX(4px) rotate(5deg); } }
+
+      @media (prefers-reduced-motion: reduce) {
+        .actor { transition: none; }
+        .actor.walking svg, .actor.running svg, .actor.hit svg { animation: none; }
+        .stage.chase .road, .stage.chase .bldgs { animation: none; }
+        .stat .bar i { transition: none; }
+        .bubble { transition: none; }
+        .ticker .headline { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="masthead">
+        <span class="kicker">ব্যঙ্গাত্মক সিমুলেটর গেম</span>
+        <h1>চাঁদাবাজ <span class="accent">ভাই</span></h1>
+        <p>এলাকার সবাই তোমাকে চেনে। প্রশ্ন হলো — ভয়ে, নাকি ভালোবেসে?</p>
+      </header>
+
+      <div class="ticker" aria-live="polite">
+        <span class="tag">📰 আজকের শিরোনাম</span>
+        <span class="headline" id="headline">এলাকায় নতুন "ভাই" এর আবির্ভাব, দোকানদারদের মুখে চিন্তার ছাপ</span>
+      </div>
+
+      <div class="hud" id="hud" hidden>
+        <div class="stat"><div class="label">📅 দিন</div><div class="value" id="statDay">১ / ৩০</div></div>
+        <div class="stat"><div class="label">💰 ক্যাশ</div><div class="value" id="statMoney">৳৫০০</div></div>
+        <div class="stat" id="boxPower"><div class="label">👑 প্রভাব</div><div class="value" id="statPower">১০</div><div class="bar" id="barPower"><i style="width:10%"></i></div></div>
+        <div class="stat" id="boxHeat"><div class="label">🚨 পুলিশের নজর</div><div class="value" id="statHeat">০</div><div class="bar" id="barHeat"><i style="width:0%"></i></div></div>
+      </div>
+
+      <!-- INTRO -->
+      <section class="screen active" id="screenIntro">
+        <div class="card intro">
+          <h2>কাহিনীটা এমন…</h2>
+          <p>তুমি এলাকার উঠতি চাঁদাবাজ। পকেটে মাত্র <b>৳৫০০</b>, মাথায় বড় হওয়ার স্বপ্ন। আগামী <b>৩০ দিনে</b> দোকানপাট, ঠিকাদার আর ব্যবসায়ীদের কাছ থেকে "সালামি" আদায় করে গড়ে তুলতে হবে তোমার সাম্রাজ্য। এবার সত্যিকারের টাচ কন্ট্রোল — বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টেনে নিজে হেঁটে-দৌড়ে দোকানে যাবে, ডান পাশের বোতামে <b>লাফ</b> দেবে। দোকানদার থাকবে দোকানের <b>ভেতরে</b> — দোকানের সামনে দাঁড়ালেই পাশে প্যানেল উঠবে, সেখান থেকে টাচ করে ঠিক করবে টাকা কীভাবে নেবে। সবার মাথার ওপর ভাসবে মজার সব কথা, আর পুলিশ তাড়া করলে রাস্তার বাধা লাফিয়ে পেরিয়ে সত্যি সত্যি পালাতে হবে! গেমের সিন এখন <b>ফোনের ফুল স্ক্রিনে ১৬:৯ রেশিওতে</b> — ফোন আড়াআড়ি ধরলেই পুরো পর্দা জুড়ে খেলা যাবে, উপরে "⛶ ফুল স্ক্রিন" বোতামও আছে।</p>
+          <p>কিন্তু সাবধান — বেশি বাড়াবাড়ি করলেই পুলিশের নজর বাড়বে। নজর বাড়লেই ধাওয়া, ধরা পড়লেই সোজা হাজত। তখন ঘুষের টাকাও কাজে আসবে না… নাকি আসবে?</p>
+          <ul class="rules">
+            <li><span class="n">১</span><div><b>জয়স্টিক টেনে নিজে হেঁটে-দৌড়ে দোকানে যাও</b><span>প্রতিদিন ৩টা দোকান/ব্যবসা। বাম পাশের জয়স্টিক আঙুল দিয়ে টানো — অল্প টানলে হাঁটা, পুরো টানলে দৌড়। ডান পাশের সবুজ বোতামে লাফ। দোকানদার থাকবে দোকানের ভেতরে; সামনে দাঁড়ালেই ডান পাশে প্যানেল উঠবে — সেখান থেকে টাচ করে বেছে নাও টাকা কীভাবে নেবে: ভদ্রভাবে বলবে, চাপ দেবে, নাকি ছেড়ে দেবে। মাথার ওপরের কথাগুলো শোনো — দোকানদারের মুখের হাসি আর মনের কথা, দুটোই দেখা যাবে। সব তথ্য (দিন, ক্যাশ, প্রভাব, পুলিশের নজর) সবসময় স্ক্রিনের উপরে থাকবে।</span></div></li>
+            <li><span class="n">২</span><div><b>পুলিশ তাড়া করলে লাফিয়ে পালাও!</b><span>নজর বেশি বাড়লেই পুলিশ পেছনে লাগবে। তখন সত্যিকারের দৌড় — পথে ডাস্টবিন, রিকশা, গর্ত! "লাফ" বোতাম (বা স্পেসবার) চেপে লাফিয়ে পেরোতে হবে। ধাক্কা খেলেই পুলিশ ঘাড়ের কাছে — ধরা পড়লেই হাজত।</span></div></li>
+            <li><span class="n">৩</span><div><b>রাতে থাকা আর ঘুষ-বাণিজ্য</b><span>রাতে কোথায় থাকবে ঠিক করো — নিজের বাসা, মামার বাসায় লুকিয়ে, নাকি হোটেলে। থানায় "চা-খরচ" দিলে নজর কমে, গুন্ডা ভাড়া করলে আদায় বাড়ে, উকিল রাখলে হাজত থেকেও ছাড়া পাওয়ার সুযোগ থাকে।</span></div></li>
+            <li><span class="n">৪</span><div><b>লক্ষ্য: ৳১০ লাখ</b><span>৩০ দিনে ৳১০ লাখ জমাতে পারলে তুমি এলাকার অবিসংবাদিত ডন। হাজতে দিন কাটালে সময় নষ্ট — হিসাব মিলিয়ে চলো।</span></div></li>
+          </ul>
+          <button class="btn btn-primary" id="btnStart">খেলা শুরু করো →</button>
+          <p class="disclaimer">এটি সম্পূর্ণ ব্যঙ্গাত্মক কাল্পনিক গেম। বাস্তবে চাঁদাবাজি ও ঘুষ দুর্নীতি — আইনত দণ্ডনীয় অপরাধ। গেমে জেতা সহজ, বাস্তবে শেষটা সবসময় হাজতেই হয়।</p>
+        </div>
+      </section>
+
+      <!-- GAME -->
+      <section class="screen" id="screenGame">
+        <div class="fs-bar">
+          <button class="btn-fs" id="btnFullscreen" type="button">⛶ ফুল স্ক্রিন · ১৬:৯</button>
+          <span class="fs-hint">ফোন আড়াআড়ি (ল্যান্ডস্কেপ) ধরলেই<br>পুরো স্ক্রিনে ১৬:৯-তে খেলা যাবে</span>
+        </div>
+        <div class="day-banner">
+          <h2 id="dayTitle">দিন ১</h2>
+          <div class="phase" id="phaseText">টার্গেট ১ / ৩</div>
+        </div>
+        <div id="stageBox"></div>
+        <div id="padBox" hidden>
+          <div class="pad-row">
+            <div class="joy-wrap">
+              <div class="joy" id="joy" aria-label="জয়স্টিক — আঙুল টেনে হাঁটো বা দৌড়াও"><div class="joy-knob" id="joyKnob">◀▶</div></div>
+              <div class="joy-label">জয়স্টিক টানো</div>
+            </div>
+            <button class="pad-jump" id="padJump">⤒<br>লাফ</button>
+          </div>
+          <p class="pad-hint" id="padHint"></p>
+        </div>
+        <div id="playArea"></div>
+        <div class="log" id="logBox" hidden>
+          <h3>📓 আজকের ডায়েরি</h3>
+          <ul id="logList"></ul>
+        </div>
+      </section>
+
+      <!-- END -->
+      <section class="screen" id="screenEnd">
+        <div class="card end-card">
+          <div class="e-emoji" id="endEmoji">👑</div>
+          <h2 id="endTitle">এলাকার ডন!</h2>
+          <div class="rank" id="endRank">পদবি: গডফাদার</div>
+          <p id="endText"></p>
+          <div class="end-stats" id="endStats"></div>
+          <button class="btn btn-primary" id="btnRestart">আবার খেলো 🔄</button>
+          <p class="disclaimer">মনে রেখো — এটা শুধু গেম। বাস্তবের চাঁদাবাজদের শেষ ঠিকানা হাজত, ইতিহাস সাক্ষী।</p>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      "use strict";
+
+      /* ---------- Helpers ---------- */
+      var BN = ["০","১","২","৩","৪","৫","৬","৭","৮","৯"];
+      function bn(n) { return String(n).replace(/[0-9]/g, function (d) { return BN[+d]; }); }
+      function money(n) {
+        var s = Math.round(Math.abs(n)).toString(), out = "";
+        if (s.length > 3) {
+          var last = s.slice(-3), rest = s.slice(0, -3), parts = [];
+          while (rest.length > 2) { parts.unshift(rest.slice(-2)); rest = rest.slice(0, -2); }
+          if (rest) parts.unshift(rest);
+          out = parts.join(",") + "," + last;
+        } else out = s;
+        return (n < 0 ? "-৳" : "৳") + bn(out);
+      }
+      function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+      function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+      function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+      /* ---------- Character art (SVG people) ---------- */
+      function person(o) {
+        var skin = o.skin || "#c98a5a", shirt = o.shirt, pants = o.pants || "#3a3f4a";
+        var head = "";
+        if (o.hat === "police") {
+          head = '<path d="M18 20 a12 12 0 0 1 24 0 z" fill="#274b8f"/><rect x="14" y="19" width="32" height="4" rx="2" fill="#1b3565"/><circle cx="30" cy="13" r="2.6" fill="#ffd94d"/>';
+        } else if (o.hat === "tupi") {
+          head = '<path d="M19 21 a11 11 0 0 1 22 0 z" fill="#f2ead8"/>';
+        } else if (o.hat === "cap") {
+          head = '<path d="M18 21 a12 12 0 0 1 24 0 z" fill="#333"/><rect x="30" y="19" width="15" height="3.4" rx="1.7" fill="#333"/>';
+        } else {
+          head = '<path d="M18 22 a12 11 0 0 1 24 0 l0 -2 a12 9 0 0 0 -24 0 z" fill="#241a12"/>';
+        }
+        var face = "";
+        if (o.beard) face += '<path d="M21 33 a9 8 0 0 0 18 0 l0 3 a9 6 0 0 1 -18 0 z" fill="#3a2c1e"/>';
+        if (o.glasses) face += '<circle cx="24.5" cy="27" r="3.6" fill="rgba(255,255,255,.25)" stroke="#14100c" stroke-width="1.6"/><circle cx="35.5" cy="27" r="3.6" fill="rgba(255,255,255,.25)" stroke="#14100c" stroke-width="1.6"/><line x1="28" y1="27" x2="32" y2="27" stroke="#14100c" stroke-width="1.6"/>';
+        else face += '<circle cx="25" cy="27" r="1.5" fill="#241a12"/><circle cx="35" cy="27" r="1.5" fill="#241a12"/>';
+        if (o.worried) face += '<path d="M26 35 q4 -2.4 8 0" stroke="#241a12" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+        else face += '<path d="M26 34 q4 2.6 8 0" stroke="#241a12" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+        var stick = o.stick ? '<rect x="49" y="52" width="4" height="30" rx="2" fill="#6b4f2a" transform="rotate(14 51 52)"/>' : "";
+        var phone = o.phone ? '<rect x="47" y="48" width="7" height="11" rx="1.5" fill="#14100c"/>' : "";
+        return '<svg viewBox="0 0 60 118" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+          '<rect x="19" y="86" width="9" height="26" rx="3" fill="' + pants + '"/>' +
+          '<rect x="32" y="86" width="9" height="26" rx="3" fill="' + pants + '"/>' +
+          '<rect x="16" y="110" width="13" height="5" rx="2.4" fill="#241a12"/>' +
+          '<rect x="31" y="110" width="13" height="5" rx="2.4" fill="#241a12"/>' +
+          '<rect x="7" y="46" width="8" height="30" rx="4" fill="' + shirt + '"/>' +
+          '<rect x="45" y="46" width="8" height="30" rx="4" fill="' + shirt + '"/>' +
+          '<circle cx="11" cy="78" r="4" fill="' + skin + '"/><circle cx="49" cy="78" r="4" fill="' + skin + '"/>' +
+          stick + phone +
+          '<rect x="15" y="42" width="30" height="47" rx="8" fill="' + shirt + '"/>' +
+          '<circle cx="30" cy="27" r="12.5" fill="' + skin + '"/>' +
+          head + face +
+          '</svg>';
+      }
+      var HERO = { shirt: "#b3232a", pants: "#23262e", glasses: true, hat: "cap" };
+      var POLICE = { shirt: "#2f5cb8", pants: "#274b8f", hat: "police", stick: true, skin: "#a06a3c" };
+      var KEEPERS = [
+        { shirt: "#e8e2d2", pants: "#5a5344", beard: true, hat: "tupi", worried: true },
+        { shirt: "#7fa36b", pants: "#3a3f4a", worried: true },
+        { shirt: "#e8b04b", pants: "#4a3d28", beard: true, worried: true, skin: "#a06a3c" },
+        { shirt: "#9fd3e8", pants: "#274b63", worried: true, skin: "#8a5a34" },
+        { shirt: "#c96f4a", pants: "#3d372a", hat: "tupi", worried: true }
+      ];
+
+      /* ---------- Funny speech lines ---------- */
+      var KEEPER_GREET = [
+        "আসসালামু আলাইকুম ভাই! চা খাবেন? ফ্রি, ফ্রি!",
+        "আরে ভাই! আপনাকে দেখলেই দোকান আলো হয়ে যায়!",
+        "ভাই, বসেন বসেন! (আজ আবার পকেট খালি হবে…)",
+        "এই যে ভাই! আপনার জন্যই তো দোকান খুলে বসে আছি!",
+        "ভাই আসছেন! (ক্যাশবাক্সটা পেছনে সরাই…)"
+      ];
+      var KEEPER_THINK = [
+        "মনে মনে: আজও এলো! ভাগ্যিস বউয়ের গয়না লুকিয়ে রাখছি…",
+        "মনে মনে: হাসি দাও, হাসি! হাসলে নাকি কম নেয়…",
+        "মনে মনে: কাল থেকেই ভাবছিলাম দোকানটা বিক্রি করে দিই…",
+        "মনে মনে: পুলিশকে ফোন করব? না থাক, ফোনের বিলও তো টাকা!",
+        "মনে মনে: এই টাকা দিয়ে ছেলের বই কিনতাম…"
+      ];
+      var HERO_POLITE = [
+        "মামা, এলাকার 'উন্নয়ন ফি'-টা… বুঝতেই পারছেন।",
+        "ভাই, সহযোগিতা চাই। এলাকা শান্ত থাকলে ব্যবসাও ভালো।",
+        "চাচা, মাসিক 'সালামি'-টা দিলে আমিও নিশ্চিন্ত, আপনিও।"
+      ];
+      var HERO_FORCE = [
+        "টাকা বের করো। বেশি কথা বললে দোকান 'সংস্কার' হয়ে যাবে।",
+        "আমার ছেলেরা বাইরে দাঁড়িয়ে আছে। ওদের চা খাওয়াবে?",
+        "শেষবার ভালো করে বলছি — ক্যাশবাক্সটা এদিকে দাও।"
+      ];
+      var HERO_SKIP = [
+        "থাক মামা, আজ থাক। মনটা ভালো আছে।",
+        "আজ ছেড়ে দিলাম। তবে কালকের কথা আলাদা!",
+        "আপনার মুখ দেখে মায়া লাগল। যান, আজ ফ্রি।"
+      ];
+      var KEEPER_OK = [
+        "জি ভাই, এই নিন! আপনার দোয়াই কাম্য!",
+        "ভাইয়ের জন্য টাকা কোনো ব্যাপার না! (বুকটা ফেটে যাচ্ছে…)",
+        "নিন ভাই, আর চা-টা খেয়ে যান, পয়সা লাগবে না!"
+      ];
+      var KEEPER_FAIL = [
+        "ভাই, সত্যি বলছি — আজ বউয়ের কাছ থেকেও ধার করতে হবে!",
+        "ভাই, পকেটে শুধু বাজারের লিস্ট আছে, টাকা নাই!",
+        "এই মাসটা পার করে দেন ভাই, সামনের মাসে ডাবল!"
+      ];
+      var KEEPER_SCARED = [
+        "দি-দিচ্ছি ভাই! হাত কাঁপছে, টাকাটা গুনে নেন!",
+        "ভাই ভাই ভাই! মারবেন না, ড্রয়ার খুলে দিচ্ছি!",
+        "আল্লাহর দোহাই ভাই, দোকান ভাঙবেন না, টাকা নিন!"
+      ];
+      var POLICE_SHOUT = [
+        "থামো! থামো বলছি! পুলিশ!",
+        "এই ছেলে, দাঁড়া! দৌড়ে লাভ নাই!",
+        "হ্যালো থানা? আমি দৌড়াচ্ছি, জিপ পাঠান!",
+        "আজ তোকে ধরবই! আমার জুতাটা নতুন!",
+        "দাঁড়া! হাজতের ভাত খাওয়ার সময় হয়েছে!"
+      ];
+      var HERO_RUN = [
+        "আজ জুতা পরে আসাটাই ভুল হয়েছে!",
+        "মা বলেছিল চাকরি করতে… শুনলাম না!",
+        "দৌড়া বাবা দৌড়া! হাজতের ডাল-ভাত না!",
+        "এই গলিটা চিনি! সামনেই মামার বাসা!",
+        "ওজন কমানোর এই তো সুযোগ!"
+      ];
+      var JAILER_LINES = [
+        "ভেতরে যাও 'ভাই'। এখানে সবাই সমান — সবাই আসামি।",
+        "হাজতে স্বাগতম! এখানে চাঁদা চলে না, চলে ডাল-পানি।",
+        "বাইরে তুমি ডন, এখানে তুমি শুধু 'আসামি নম্বর ৪২০'।"
+      ];
+      var CELLMATE_LINES = [
+        "সহবন্দি: ভাই, আমিও 'ভাই' ছিলাম… ২০১৯ সালে।",
+        "সহবন্দি: চিন্তা করবেন না ভাই, ডালটা খারাপ না। ভাতটাই সমস্যা।",
+        "সহবন্দি: বাইরে বেরিয়ে আমি চায়ের দোকান দেবো। সৎ ব্যবসা!",
+        "সহবন্দি: আপনার গল্প শুনে ভালো লাগল। আমারটা শুনবেন? ৩ বছরের…"
+      ];
+      var HOME_LINES = [
+        "মা ফোন করেছিল — বললাম 'অফিসে' আছি। এই বাসাটাই এখন অফিস।",
+        "আজকের আয় গুনে দেখি… ডন হতে এখনো অনেক দূর!",
+        "ঘুমানোর আগে জানালা দিয়ে দেখে নিই — পুলিশের জিপ আছে নাকি।",
+        "বিছানায় শুয়ে ভাবি — কাল কোন দোকানটা বাকি?"
+      ];
+
+      /* ---------- Data ---------- */
+      var TARGETS = [
+        { emoji: "🍵", name: "রহিম মামার চায়ের দোকান", who: "দোকানদার · মোড়ের চা-স্টল", base: 800, risk: 1,
+          scene: "রহিম মামা ত্রিশ বছর ধরে এই মোড়ে চা বিক্রি করেন। ক্যাশবাক্সে আজ ভালোই জমেছে। তোমাকে দেখে তিনি কাপ ধোয়ার গতি বাড়িয়ে দিলেন।" },
+        { emoji: "🛺", name: "করিমের রিকশা গ্যারেজ", who: "গ্যারেজ মালিক · ১২টা রিকশা", base: 1500, risk: 1,
+          scene: "করিমের গ্যারেজে বারোটা রিকশা। চালকরা ভাড়া জমা দিচ্ছে। করিম তোমাকে দেখে হাসল — হাসিটা একটু জোর করেই।" },
+        { emoji: "🏗️", name: "নির্মাণাধীন ভবন", who: "ঠিকাদার · ১০ তলা ফ্ল্যাট বাড়ি", base: 8000, risk: 3,
+          scene: "নতুন ভবন উঠছে। ঠিকাদার সাহেবের অফিস-কাঁচায় এসি চলছে। ইট-বালুর ট্রাক ঢুকছে একের পর এক — ক্যাশ ফ্লো যে ভালো, বোঝাই যাচ্ছে।" },
+        { emoji: "🍎", name: "ফলের দোকান", who: "ব্যবসায়ী · আম-লিচুর মৌসুম", base: 1200, risk: 1,
+          scene: "মৌসুমি ফলে দোকান ভরা। মালিক ঝুড়ি সাজাতে সাজাতে বললেন, 'ভাই, এইবার মৌসুমটাই খারাপ…' — অথচ ক্রেতার লাইন দরজা পর্যন্ত।" },
+        { emoji: "🚌", name: "বাস কাউন্টার", who: "কাউন্টার ম্যানেজার · আন্তঃজেলা রুট", base: 5000, risk: 2,
+          scene: "ঈদের আগের ভিড়। টিকিটের জন্য লাইন রাস্তায় নেমে গেছে। ম্যানেজার টাকা গুনতে গুনতে ঘামছেন।" },
+        { emoji: "🎉", name: "কমিউনিটি সেন্টার", who: "ম্যানেজার · বিয়ের মৌসুম", base: 6000, risk: 2,
+          scene: "আজ বড় বিয়ে — পাঁচশো অতিথি। ম্যানেজার বললেন বুকিং পুরো মাস ফুল। ডেকোরেশনের গাড়ি ঢুকছে গেট দিয়ে।" },
+        { emoji: "🧆", name: "ফুচকার দোকান", who: "স্কুলগেটের সামনে · বিকেলের ভিড়", base: 600, risk: 1,
+          scene: "স্কুল ছুটির পর ফুচকাওয়ালার চারপাশে ভিড়। ছোট দোকান, কিন্তু রোজগার মন্দ না। মালিক তোমাকে দেখে তেঁতুলের পানি নাড়া থামিয়ে দিলেন।" },
+        { emoji: "🐟", name: "মাছের আড়ত", who: "আড়তদার · ভোরের নিলাম", base: 7000, risk: 2,
+          scene: "ভোর পাঁচটায় নিলাম শেষ। ইলিশের ঝুড়ি ট্রাকে উঠছে। আড়তদারের গলায় টাকার ব্যাগ — আজ ব্যবসা হয়েছে বটে!" },
+        { emoji: "🔧", name: "মোটর ওয়ার্কশপ", who: "মিস্ত্রি-মালিক · গ্যারেজ পাড়া", base: 2500, risk: 2,
+          scene: "ওয়ার্কশপে তিনটা গাড়ি লিফটে। মালিক হাতে মবিল মেখে হিসাব মেলাচ্ছেন। তোমাকে দেখে তোয়ালেটা কাঁধে ফেললেন।" },
+        { emoji: "🍛", name: "হোটেল 'ভাতের ঘর'", who: "হোটেল মালিক · দুপুরের ধুম", base: 3000, risk: 2,
+          scene: "দুপুরে হোটেলে পা ফেলার জায়গা নেই। ক্যাশিয়ার টাকা রাখার ড্রয়ার বদলাচ্ছেন — আগেরটা ভরে গেছে।" },
+        { emoji: "🏫", name: "কোচিং সেন্টার", who: "পরিচালক · ভর্তির মৌসুম", base: 9000, risk: 3,
+          scene: "ভর্তির লাইনে অভিভাবকরা। 'স্যার'-এর কোচিংয়ে নাকি পাসের গ্যারান্টি। ফি-র খাম হাতে হাতে ঘুরছে।" },
+        { emoji: "💊", name: "ফার্মেসি", who: "ওষুধের দোকান · ২৪ ঘণ্টা খোলা", base: 4000, risk: 2,
+          scene: "পাড়ার একমাত্র ফার্মেসি, রাতদিন খোলা। মালিক বললেন ব্যবসা 'চলছে কোনোমতে' — কিন্তু নতুন ফ্রিজটা এসেছে গত সপ্তাহেই।" },
+        { emoji: "🚤", name: "লঞ্চঘাটের টোল", who: "ঘাট ইজারাদার · নদীপাড়", base: 5500, risk: 3,
+          scene: "ঘাটে যাত্রীর ঢল। ইজারাদারের লোক টোল তুলছে হাতে হাতে। খাতায় যা ওঠে, পকেটে যায় তার দ্বিগুণ — পাড়ার সবাই জানে।" },
+        { emoji: "🏬", name: "নতুন শোরুম", who: "ইলেকট্রনিকস শোরুম · উদ্বোধনী অফার", base: 10000, risk: 3,
+          scene: "গতকালই উদ্বোধন হয়েছে জমকালো করে। মালিক সংবাদপত্রে বিজ্ঞাপন দিয়েছেন। বড় ব্যবসা, বড় 'নিরাপত্তা' দরকার — তাই না?" }
+      ];
+
+      var POLITE_OK = [
+        "তিনি একটু গাইগুঁই করে পুরো টাকাটাই দিয়ে দিলেন। যাওয়ার সময় বললেন, 'ভাই, এলাকায় শান্তি থাকলেই আমরা খুশি।'",
+        "দরদাম হলো কিছুক্ষণ, তারপর হাসিমুখেই টাকা বের করে দিলেন। সাথে এক কাপ চা-ও ফ্রি!",
+        "তিনি বললেন, 'আপনার এলাকায় ব্যবসা করে শান্তি আছে।' টাকা দিয়ে দিলেন কোনো ঝামেলা ছাড়াই।"
+      ];
+      var POLITE_FAIL = [
+        "তিনি হাত জোড় করে বললেন, 'ভাই, এই মাসে সত্যিই টানাটানি।' খালি হাতে ফিরতে হলো — তবে সুনামটা রইল।",
+        "তিনি কাঁদো কাঁদো গলায় বউ-বাচ্চার কথা বললেন। মনটা নরম হয়ে গেল — আজ ছেড়ে দিলে।",
+        "দোকানে সত্যিই বিক্রি কম। অর্ধেক টাকা দিয়ে বললেন, বাকিটা 'আগামী হপ্তায়'। ক্লাসিক।"
+      ];
+      var FORCE_OK = [
+        "তোমার লোকেরা দোকানের সামনে দাঁড়াতেই তিনি কাঁপা হাতে ড্রয়ার খুললেন। টাকা মিলল, পুরোটাই।",
+        "একটা চেয়ার উল্টে পড়ার শব্দেই কাজ হয়ে গেল। টাকা হাতে, মুখে কোনো কথা নেই।",
+        "তিনি প্রথমে অস্বীকার করলেন, তারপর তোমার ঠান্ডা হাসি দেখে পুরো টাকাটা বের করে দিলেন।"
+      ];
+      var FORCE_BACKFIRE = [
+        "বিপদ! পাশের দোকানের ছেলেটা মোবাইলে ভিডিও করে ফেলেছে — ভিডিওটা ছড়িয়ে পড়ছে! পুলিশের নজর একলাফে বাড়ল।",
+        "তিনি টাকা দিলেন বটে, কিন্তু রাতেই থানায় গিয়ে ডায়েরি করে এলেন। ঝামেলা বাড়ল।",
+        "চিৎকার-চেঁচামেচিতে পুরো বাজার জড়ো হয়ে গেল। টাকা পেলে ঠিকই, কিন্তু সবাই এখন তোমার মুখ চেনে।"
+      ];
+      var SKIP_LINES = [
+        "আজ তাকে ছেড়ে দিলে। এলাকায় গুঞ্জন — 'ভাইয়ের মনটা আসলে নরম।' সুনাম একটু বাড়ল।",
+        "টাকা নিলে না। তিনি অবাক হয়ে তাকিয়ে রইলেন। এই অবাক-ভাবটাই পরে কাজে দেবে।"
+      ];
+
+      var HEADLINES = [
+        "এলাকায় নতুন \"ভাই\" এর আবির্ভাব, দোকানদারদের মুখে চিন্তার ছাপ",
+        "\"সালামি\" না দিলে দোকান খোলা যাবে না? — ব্যবসায়ীদের অভিযোগ",
+        "থানার ওসি বললেন, \"আমরা কিছুই জানি না\" — এলাকাবাসী হতবাক",
+        "চাঁদাবাজির প্রতিবাদে মানববন্ধন, পেছনের সারিতে চাঁদাবাজের লোকজনও!",
+        "স্থানীয় \"ভাই\" এর জন্মদিনে শহরজুড়ে পোস্টার, খরচের হিসাব মিলছে না",
+        "\"উন্নয়ন ফি\" নামে নতুন চাঁদা, ব্যবসায়ীরা বলছেন — নাম বদলালেও ব্যথা একই",
+        "পুলিশের অভিযানে চাঁদাবাজ আটক… পরে \"ভুল বোঝাবুঝি\" বলে ছেড়ে দেওয়া হয়েছে",
+        "এলাকার ডনের দান-খয়রাতে মুগ্ধ জনতা, প্রশ্ন তুললেই \"ষড়যন্ত্র\"",
+        "চাঁদার টাকায় বিদেশ সফর! ফেসবুকে ছবি দেখে এলাকায় তোলপাড়",
+        "নির্বাচন এলেই বাড়ে \"ভাই\"দের কদর — রাজনৈতিক বিশ্লেষকদের মত",
+        "হাজত থেকে ফিরেই আবার আড্ডায় \"ভাই\" — এলাকায় মিশ্র প্রতিক্রিয়া",
+        "পুলিশের ধাওয়ায় চাঁদাবাজের জুতা রাস্তায়! ভিডিও ভাইরাল"
+      ];
+
+      var EVENTS = [
+        {
+          tag: "⚡ হঠাৎ ঘটনা", title: "সাংবাদিকের ক্যামেরা!",
+          text: "এক টিভি সাংবাদিক এলাকায় এসে চাঁদাবাজি নিয়ে রিপোর্ট করছেন। দোকানদাররা মুখ খুলতে ভয় পাচ্ছে, কিন্তু ক্যামেরা ঘুরছে তোমার আড্ডার দিকেই…",
+          choices: [
+            { t: "সাংবাদিককে \"চা-খরচ\" দাও", d: "৳৩,০০০ খরচ — রিপোর্টটা \"নরম\" হবে", fx: function () { return { money: -3000, heat: -12, msg: "সাংবাদিক হেসে বললেন, 'আপনাদের এলাকা তো বেশ শান্ত!' রিপোর্টে তোমার নামই এল না।" }; } },
+            { t: "ক্যামেরা দেখলেই সটকে পড়ো", d: "কিছুদিন গা ঢাকা দাও — প্রভাব কমবে", fx: function () { return { power: -6, heat: -6, msg: "কয়েকদিন আড্ডায় গেলে না। রিপোর্ট হলো, কিন্তু তোমার ছবি নেই। প্রভাব একটু কমল বটে।" }; } },
+            { t: "ক্যামেরার সামনে বক্তব্য দাও!", d: "\"আমি এলাকার সেবক\" — ঝুঁকি বেশি, লাভও বেশি হতে পারে", fx: function () { return Math.random() < 0.5 ? { power: 12, heat: 8, msg: "বক্তব্য ভাইরাল! 'সেবক ভাই' নামে ফ্যানপেজ খুলে গেছে। প্রভাব বাড়ল — সাথে পুলিশের নজরও।" } : { power: -8, heat: 16, msg: "বক্তব্য নিয়ে ট্রল শুরু! মিম পেজে তোমার ছবি। পুলিশও এখন মুখটা ভালো করে চেনে।" }; } }
+          ]
+        },
+        {
+          tag: "⚡ হঠাৎ ঘটনা", title: "নির্বাচনের হাওয়া",
+          text: "সামনে স্থানীয় নির্বাচন। এক প্রার্থীর লোক এসে বলল — ভোটের দিন 'মাঠ সামলাতে' পারলে ভালো 'সম্মানী' মিলবে। কাজটা অবশ্য পুরোপুরি আইনের বাইরে।",
+          choices: [
+            { t: "চুক্তি করো", d: "মোটা টাকা, কিন্তু পুলিশের নজর বাড়বে", fx: function () { return { money: 15000, heat: 14, power: 6, msg: "ভোটের দিন 'মাঠ' তোমারই ছিল। সম্মানী মিলল ৳১৫,০০০। তবে থানার খাতায় নামটা আরও বড় হরফে উঠল।" }; } },
+            { t: "সাফ না করে দাও", d: "\"আমি রাজনীতিতে নেই ভাই\"", fx: function () { return { power: -3, msg: "প্রার্থীর লোক মুখ বাঁকিয়ে চলে গেল। টাকা গেল, ঝামেলাও গেল।" }; } }
+          ]
+        },
+        {
+          tag: "⚡ হঠাৎ ঘটনা", title: "প্রতিদ্বন্দ্বী গ্যাং!",
+          text: "পাশের এলাকার 'ছোট ভাই' গ্রুপ তোমার এলাকায় চাঁদা তুলতে এসেছিল। তোমার লোকেরা খবর পেয়ে গেছে — এখন সিদ্ধান্ত তোমার।",
+          choices: [
+            { t: "মুখোমুখি হও", d: "শক্তি দেখাও — হয় এলাকা থাকবে, নয়তো হাসপাতাল", fx: function () { return Math.random() < 0.6 ? { power: 14, heat: 10, msg: "ধাওয়া-পাল্টা ধাওয়ার পর ওরা পিছু হটল। এলাকায় তোমার নাম এখন আরেক ধাপ উপরে — পুলিশের খাতায়ও।" } : { money: -4000, power: -8, heat: 12, msg: "মারামারিতে তোমার দুজন হাসপাতালে। চিকিৎসার বিল ৳৪,০০০ তোমাকেই দিতে হলো।" }; } },
+            { t: "এলাকা ভাগাভাগির প্রস্তাব দাও", d: "কূটনীতি — প্রভাব অটুট, ঝামেলা শূন্য", fx: function () { return { power: 4, msg: "চা-এর টেবিলে বসে সীমানা ঠিক হলো। দুজনেই খুশি। কূটনীতিক হিসেবে সুনাম বাড়ল।" }; } }
+          ]
+        },
+        {
+          tag: "⚡ হঠাৎ ঘটনা", title: "ওসি সাহেব বদলি!",
+          text: "থানায় নতুন ওসি এসেছেন — শোনা যাচ্ছে তিনি 'সৎ ও কঠোর'। পুরনো 'ব্যবস্থা' এখন আর চলবে কি না, কেউ জানে না।",
+          choices: [
+            { t: "নতুন ওসির সাথে \"পরিচিত\" হও", d: "৳৫,০০০ 'সৌজন্য উপহার' — নজর অনেক কমবে", fx: function () { return { money: -5000, heat: -22, msg: "ওসি সাহেব উপহার দেখে মুচকি হাসলেন। 'কঠোর' মানুষও দেখা গেল বেশ 'ব্যবহারিক'। নজর ঝটপট কমে গেল।" }; } },
+            { t: "কয়েকদিন চুপচাপ থাকো", d: "আদায় বন্ধ — আয় নেই, ঝুঁকিও নেই", fx: function () { return { heat: -10, msg: "কিছুদিন সব শান্ত। ওসি সাহেব অন্য মামলায় ব্যস্ত হয়ে পড়লেন।" }; } }
+          ]
+        }
+      ];
+
+      /* ---------- State ---------- */
+      var GOAL = 1000000, MAXDAY = 30;
+      var S = null;
+      function newState() {
+        return {
+          day: 1, money: 500, power: 10, heat: 0,
+          turn: 0, earned: 0, dayEarned: 0, dayHeat: 0,
+          goons: 0, lawyer: false, jailed: 0, chases: 0, escapes: 0,
+          targets: [], done: [false, false, false], usedEvents: [], over: false
+        };
+      }
+
+      /* ---------- DOM ---------- */
+      var $ = function (id) { return document.getElementById(id); };
+      var playArea = $("playArea"), stageBox = $("stageBox"), logList = $("logList"), logBox = $("logBox");
+      var timers = [];
+      function later(fn, ms) { var id = setTimeout(fn, ms); timers.push(id); return id; }
+      function clearTimers() { timers.forEach(function (id) { clearTimeout(id); }); timers = []; if (chaseTimer) { clearInterval(chaseTimer); chaseTimer = null; } }
+
+      function show(screenId) {
+        ["screenIntro", "screenGame", "screenEnd"].forEach(function (id) {
+          $(id).classList.toggle("active", id === screenId);
+        });
+      }
+      function updateHUD() {
+        $("statDay").textContent = bn(Math.min(S.day, MAXDAY)) + " / " + bn(MAXDAY);
+        $("statMoney").textContent = money(S.money);
+        $("statPower").textContent = bn(S.power);
+        $("statHeat").textContent = bn(S.heat);
+        $("barPower").firstElementChild.style.width = clamp(S.power, 0, 100) + "%";
+        $("barHeat").firstElementChild.style.width = clamp(S.heat, 0, 100) + "%";
+        $("boxHeat").classList.toggle("danger", S.heat >= 70);
+        $("boxPower").classList.toggle("danger", S.power < 15);
+      }
+      function log(html) {
+        var li = document.createElement("li");
+        li.innerHTML = html;
+        logList.prepend(li);
+        logBox.hidden = false;
+      }
+      /* ---------- আজকের শিরোনাম: প্রতিনিয়ত নিজে নিজে বদলায় ---------- */
+      var headlineQueue = [], headlineInt = null;
+      function nextHeadlineText() {
+        if (!headlineQueue.length) headlineQueue = shuffle(HEADLINES.slice());
+        var cur = $("headline").textContent;
+        var t = headlineQueue.shift();
+        if (t === cur && headlineQueue.length) { headlineQueue.push(t); t = headlineQueue.shift(); }
+        return t;
+      }
+      function setHeadline() {
+        var el = $("headline");
+        var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduce) { el.textContent = nextHeadlineText(); return; }
+        el.classList.add("swap");
+        setTimeout(function () { el.textContent = nextHeadlineText(); el.classList.remove("swap"); }, 300);
+      }
+      function startHeadlineTicker() {
+        if (headlineInt) return;
+        headlineInt = setInterval(function () { if (!document.hidden) setHeadline(); }, 4500);
+      }
+
+      /* ---------- Stage & bubbles ---------- */
+      function actorHTML(id, art, tag, left, opts) {
+        opts = opts || {};
+        return '<div class="actor' + (opts.cls ? ' ' + opts.cls : '') + '" id="' + id + '" style="left:' + left + (opts.z ? ';z-index:' + opts.z : '') + '">' +
+          '<div class="bubble' + (opts.bubbleCls ? ' ' + opts.bubbleCls : '') + '" id="' + id + 'Bubble"></div>' + person(art) +
+          (tag ? '<div class="who-tag">' + tag + '</div>' : '') + '</div>';
+      }
+      function say(actorId, text, think, hold) {
+        var b = $(actorId + "Bubble");
+        if (!b) return;
+        b.textContent = text;
+        b.classList.toggle("think", !!think);
+        b.classList.add("show");
+        if (!hold) later(function () { if (b) b.classList.remove("show"); }, 3400);
+      }
+      function bldgsHTML() {
+        var h = [64, 92, 52, 108, 74, 88, 58], c = ["a", "b", "c"], out = '<div class="bldgs">';
+        for (var i = 0; i < h.length; i++) out += '<div class="bldg ' + c[i % 3] + '" style="height:' + h[i] + 'px"></div>';
+        return out + '</div>';
+      }
+      /* ---------- Street: নিজে হাঁটা / দৌড় / লাফ ---------- */
+      var mode = null, rafId = null, lastTs = 0;
+      var keys = { left: false, right: false };
+      var heroState = { x: 40, air: 0, vy: 0, facing: 1, hold: 0 };
+      var joy = { dx: 0, pid: null };
+      var street = null, curShop = -1, curKeeper = "keeper0";
+
+      function stopLoop() {
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        mode = null;
+        keys.left = keys.right = false;
+        joyReset();
+        var pad = $("padBox");
+        if (pad) pad.hidden = true;
+      }
+      function showPad(kind) {
+        var pad = $("padBox");
+        pad.hidden = false;
+        pad.classList.toggle("chase", kind === "chase");
+        joyReset();
+        $("padHint").textContent = kind === "chase"
+          ? "বাধা এলেই লাফ দাও! কিবোর্ডেও চলে: ↑ / W / স্পেস"
+          : "বামে জয়স্টিক টেনে হাঁটো-দৌড়াও · ডানে লাফ · কিবোর্ড: ← → চলা, ↑ / স্পেস লাফ";
+      }
+      function doJump() {
+        if (!mode) return;
+        if (heroState.air > 0 || heroState.vy > 0) return;
+        heroState.vy = 660;
+      }
+
+      function renderDayList() {
+        var box = $("dayList");
+        if (!box || !S) return;
+        var list = "";
+        for (var k = 0; k < 3; k++) {
+          list += '<div class="summary-line"><span>' + (S.done[k] ? "✅ " : "⬜ ") + S.targets[k].emoji + " " + S.targets[k].name + '</span><b>' + (S.done[k] ? "শেষ" : money(demandOf(S.targets[k]))) + '</b></div>';
+        }
+        box.innerHTML = list;
+      }
+
+      function startStreet() {
+        stopLoop();
+        heroState.air = 0; heroState.vy = 0; heroState.hold = 0;
+        $("phaseText").textContent = S.turn >= 3 ? "সব দোকান শেষ — এবার বাসায় যাও" : "রাস্তায় আছ · দোকান বাকি " + bn(3 - S.turn) + "টা";
+        stageBox.innerHTML =
+          '<div class="stage" id="stage"><div class="sun"></div>' +
+          '<span class="stage-label">📍 এলাকার রাস্তা — জয়স্টিক টেনে নিজে যাও!</span>' +
+          '<div class="world" id="world"></div>' +
+          '<div class="shop-panel" id="shopPanel"></div></div>';
+        var stageEl = $("stage");
+        var W = Math.max(1500, Math.round(stageEl.clientWidth * 2.8));
+        var world = $("world");
+        world.style.width = W + "px";
+        var fracs = [0.30, 0.58, 0.85];
+        var bh = [64, 92, 52, 108, 74, 88, 58, 96, 60, 104, 70, 84, 56, 98], bc = ["a", "b", "c"];
+        var html = '<div class="bldgs">';
+        for (var i = 0; i < bh.length; i++) html += '<div class="bldg ' + bc[i % 3] + '" style="height:' + bh[i] + 'px"></div>';
+        html += '</div>';
+        street = { W: W, shops: [], homeX: Math.round(W * 0.965), active: -1, homeNear: false, greeted: {}, homeWarned: 0, busy: false };
+        for (var s = 0; s < 3; s++) {
+          var t = S.targets[s], x = Math.round(W * fracs[s]);
+          street.shops.push({ x: x, idx: s });
+          html += '<div class="shopfront world-shop' + (S.done[s] ? ' done' : '') + '" style="left:' + x + 'px">' +
+            (S.done[s] ? '<div class="shop-badge">✔ আজকের আদায় শেষ</div>' : '') +
+            '<div class="sign">' + t.emoji + ' ' + t.name + '</div><div class="awning"></div>' +
+            '<div class="front"><div class="win"></div><div class="door"></div></div></div>';
+          html += actorHTML("keeper" + s, KEEPERS[s % KEEPERS.length], t.who.split("·")[0].trim(), (x - 27) + "px", { cls: "inside" });
+        }
+        html += '<div class="home-door' + (S.turn >= 3 ? ' active' : '') + '" style="left:' + street.homeX + 'px">' +
+          '<div class="h-sign">🏠 তোমার বাসা</div><div class="h-door"></div></div>';
+        html += '<div class="road"></div>';
+        html += actorHTML("hero", HERO, "তুমি (ভাই)", Math.round(heroState.x) + "px");
+        world.innerHTML = html;
+        $("hero").classList.add("free");
+        playArea.innerHTML =
+          '<div class="card"><h3 style="margin:0 0 6px;font-family:\'Noto Serif Bengali\',serif">🗺️ আজকের এলাকা — জয়স্টিক টেনে যাও!</h3>' +
+          '<p class="scene" style="margin-top:0">নিচের বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টানো — অল্প টানলে <b>হাঁটা</b>, পুরো টানলে <b>দৌড়</b>! ডান পাশের সবুজ বোতামে <b>লাফ</b>। দোকানদার দোকানের <b>ভেতরে</b> থাকবে — সামনে দাঁড়ালেই ডান পাশে <b>প্যানেল</b> উঠবে, সেখান থেকে টাচ করে বেছে নেবে টাকা কীভাবে নেবে।</p>' +
+          '<div id="dayList"></div>' +
+          '<p class="risk-note">৩টা দোকান শেষ হলে রাস্তার একদম ডানদিকে 🏠 বাসার দরজায় যাও — সেখান থেকে রাতের পালা শুরু হবে।</p></div>';
+        renderDayList();
+        showPad("street");
+        mode = "street";
+        lastTs = 0;
+        rafId = requestAnimationFrame(streetTick);
+      }
+
+      function resumeStreet() {
+        if (S.over) return;
+        if (S.day > MAXDAY) { endGame(S.money >= GOAL, "finish"); return; }
+        $("dayTitle").textContent = "দিন " + bn(S.day);
+        updateHUD();
+        startStreet();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function streetTick(ts) {
+        if (mode !== "street") return;
+        rafId = requestAnimationFrame(streetTick);
+        var dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 0.016;
+        lastTs = ts;
+        var heroEl = $("hero"), world = $("world"), stageEl = $("stage");
+        if (!heroEl || !world || !stageEl || !street) return;
+        var kx = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+        var ix = kx !== 0 ? kx : (Math.abs(joy.dx) > 0.12 ? joy.dx : 0);
+        heroState.hold = ix !== 0 ? heroState.hold + dt : 0;
+        var mag = Math.min(Math.abs(ix), 1);
+        var running = mag > 0.72 || (kx !== 0 && heroState.hold > 0.55);
+        var spd = mag < 0.45 ? 175 : mag < 0.75 ? 245 : 330;
+        var dir = ix;
+        if (ix !== 0) { heroState.facing = ix > 0 ? 1 : -1; heroState.x += ix * spd * dt; }
+        heroState.x = clamp(heroState.x, 6, street.W - 68);
+        if (heroState.vy > 0 || heroState.air > 0) {
+          heroState.vy -= 1750 * dt;
+          heroState.air += heroState.vy * dt;
+          if (heroState.air <= 0) { heroState.air = 0; heroState.vy = 0; }
+        }
+        heroEl.style.left = heroState.x + "px";
+        heroEl.style.transform = "translateY(" + (-heroState.air) + "px) scaleX(" + heroState.facing + ")";
+        heroEl.classList.toggle("walking", dir !== 0 && heroState.air === 0 && !running);
+        heroEl.classList.toggle("running", dir !== 0 && heroState.air === 0 && running);
+        var cam = clamp(heroState.x - stageEl.clientWidth * 0.36, 0, Math.max(0, street.W - stageEl.clientWidth));
+        world.style.transform = "translateX(" + (-cam) + "px)";
+        var hx = heroState.x + 31, active = -1, i;
+        for (i = 0; i < 3; i++) {
+          if (!S.done[i] && Math.abs(hx - street.shops[i].x) < 62) active = i;
+        }
+        if (!street.busy) {
+          if (active !== street.active) {
+            street.active = active;
+            if (active >= 0) {
+              if (!street.greeted[active]) {
+                street.greeted[active] = true;
+                say("keeper" + active, pick(KEEPER_GREET), false, true);
+                (function (a) { later(function () { say("keeper" + a, pick(KEEPER_THINK), true); }, 2400); })(active);
+              }
+              openShopPanel(active);
+            } else if (!street.homeNear) closeShopPanel();
+          }
+          var nearHome = Math.abs(hx - street.homeX) < 58;
+          if (nearHome !== street.homeNear) {
+            street.homeNear = nearHome;
+            if (nearHome) {
+              if (S.turn >= 3) openHomePanel();
+              else if (ts - street.homeWarned > 5000) { street.homeWarned = ts; say("hero", "আগে ৩টা দোকান শেষ করি, তারপর বাসা!", true); }
+            } else if (street.active < 0) closeShopPanel();
+          }
+        }
+      }
+
+      /* ---------- Side panel: দোকানের সামনে গেলেই ওঠে ---------- */
+      function closeShopPanel() {
+        var p = $("shopPanel");
+        if (p) p.classList.remove("show");
+        if (S && mode === "street") {
+          $("phaseText").textContent = S.turn >= 3 ? "সব দোকান শেষ — এবার বাসায় যাও" : "রাস্তায় আছ · দোকান বাকি " + bn(3 - S.turn) + "টা";
+        }
+      }
+      function openShopPanel(i) {
+        curShop = i; curKeeper = "keeper" + i;
+        var t = S.targets[i], demand = demandOf(t), p = $("shopPanel");
+        if (!p) return;
+        $("phaseText").textContent = "দোকানের সামনে — " + t.name;
+        p.innerHTML =
+          '<h4>' + t.emoji + ' ' + t.name + '</h4>' +
+          '<p class="sp-who">' + t.who + ' · দোকানদার দোকানের ভেতরে আছে</p>' +
+          '<div class="demand"><span class="d-label">তোমার দাবি ("সালামি")</span><span class="d-amt">' + money(demand) + '</span></div>' +
+          '<p class="scene">' + t.scene + '</p>' +
+          '<p class="risk-note">' + riskText(t) + '</p>' +
+          '<p class="ask">টাকা কীভাবে নেবে? টাচ করে বেছে নাও 👇</p>' +
+          '<div class="choices">' +
+            '<button class="choice" data-act="polite"><span class="c-title">ভদ্রভাবে বলো <span class="tag tag-safe">নিরাপদ</span></span><span class="c-desc">হাসিমুখে "সহযোগিতা" চাও। টাকা কম মিলতে পারে, কিন্তু পুলিশের ঝামেলা নেই বললেই চলে।</span></button>' +
+            '<button class="choice" data-act="force"><span class="c-title">চাপ দিয়ে আদায় করো <span class="tag tag-risk">ঝুঁকিপূর্ণ</span></span><span class="c-desc">লোকজন নিয়ে হাজির হও। পুরো টাকা প্রায় নিশ্চিত — তবে পুলিশের নজর আর ধাওয়ার ভয় দুটোই বাড়বে।</span></button>' +
+            '<button class="choice" data-act="skip"><span class="c-title">আজ ছেড়ে দাও <span class="tag tag-mid">সুনাম</span></span><span class="c-desc">টাকা নেই, কিন্তু এলাকায় "মন ভালো" ইমেজ বাড়বে। প্রভাব বাড়লে পরে আদায়ও বাড়ে।</span></button>' +
+          '</div>' +
+          '<div class="result-box" id="panelResult"></div>';
+        p.classList.add("show");
+        p.querySelectorAll(".choice").forEach(function (b) {
+          b.addEventListener("click", function () { resolveTarget(t, demand, b.getAttribute("data-act")); });
+        });
+      }
+      function openHomePanel() {
+        var p = $("shopPanel");
+        if (!p) return;
+        $("phaseText").textContent = "বাসার দরজায় — আজকের কাজ শেষ";
+        p.innerHTML =
+          '<h4>🏠 তোমার বাসা</h4>' +
+          '<p class="scene">৩টা দোকানই শেষ। দরজায় দাঁড়িয়ে আছ — ভেতরে ঢুকলেই রাতের পালা: কোথায় থাকবে আর রাতের হিসাব-নিকাশ।</p>' +
+          '<div class="choices">' +
+            '<button class="choice" id="btnGoNight"><span class="c-title">🌙 বাসায় ঢোকো — রাতের পালা</span><span class="c-desc">আজকের মতো এলাকার কাজ শেষ।</span></button>' +
+          '</div>';
+        p.classList.add("show");
+        $("btnGoNight").addEventListener("click", function () { closeShopPanel(); nightPhase(); });
+      }
+      function showPanelResult(text, d, good, onNext) {
+        var box = $("panelResult");
+        if (!box) { onNext(); return; }
+        box.className = "result-box show " + (good ? "good" : "bad");
+        var chips = "";
+        if (d.money) chips += '<span class="delta ' + (d.money > 0 ? "up" : "down") + '">' + (d.money > 0 ? "+" : "") + money(d.money) + "</span>";
+        if (d.power) chips += '<span class="delta ' + (d.power > 0 ? "up" : "down") + '">প্রভাব ' + (d.power > 0 ? "+" : "") + bn(d.power) + "</span>";
+        if (d.heat) chips += '<span class="delta ' + (d.heat > 0 ? "heat-up" : "up") + '">পুলিশের নজর ' + (d.heat > 0 ? "+" : "") + bn(d.heat) + "</span>";
+        box.innerHTML = '<p class="r-text">' + text + '</p><div class="deltas">' + chips + '</div>' +
+          '<button class="btn next-btn" id="btnPanelNext">চলো, এগিয়ে যাও →</button>';
+        $("btnPanelNext").addEventListener("click", onNext);
+      }
+
+      function hideStage() { stageBox.innerHTML = ""; }
+
+      /* ---------- Game flow ---------- */
+      function startGame() {
+        clearTimers();
+        stopLoop();
+        document.body.classList.add("playing");
+        S = newState();
+        logList.innerHTML = ""; logBox.hidden = true;
+        $("hud").hidden = false;
+        show("screenGame");
+        setHeadline();
+        updateHUD();
+        startDay();
+      }
+
+      function startDay() {
+        S.turn = 0; S.dayEarned = 0; S.dayHeat = 0;
+        S.done = [false, false, false];
+        heroState.x = 40; heroState.air = 0; heroState.vy = 0; heroState.facing = 1; heroState.hold = 0;
+        $("dayTitle").textContent = "দিন " + bn(S.day);
+        var pool = shuffle(TARGETS.slice());
+        S.targets = pool.slice(0, 3);
+        log("<b>দিন " + bn(S.day) + "</b> — নতুন সকাল, নতুন টার্গেট। নিজে হেঁটে যাও!");
+        startStreet();
+      }
+
+      function demandOf(t) {
+        var base = t.base * (1 + S.goons * 0.15) * (0.9 + S.power / 250);
+        return Math.round(base / 100) * 100;
+      }
+
+      function riskText(t) {
+        if (t.risk === 1) return "ঝুঁকি: কম — ছোট ব্যবসা, থানায় যাওয়ার সাহস কম।";
+        if (t.risk === 2) return "ঝুঁকি: মাঝারি — টাকা আছে, পরিচিত মহলও আছে।";
+        return "ঝুঁকি: বেশি — বড় টাকা, বড় ঝামেলা। এদের ফোন একটা গেলেই উপরমহল নড়ে।";
+      }
+
+      function resolveTarget(t, demand, act) {
+        var panel = $("shopPanel");
+        if (panel) panel.querySelectorAll(".choice").forEach(function (b) { b.disabled = true; });
+        if (street) street.busy = true;
+        var d = { money: 0, power: 0, heat: 0 }, text = "", good = true;
+
+        if (act === "polite") {
+          say("hero", pick(HERO_POLITE), false, true);
+          var chance = 0.72 - t.risk * 0.08 + S.power / 400;
+          if (Math.random() < chance) {
+            var amt = Math.round(demand * (0.7 + Math.random() * 0.3) / 10) * 10;
+            d.money = amt; d.power = 1; d.heat = rnd(0, 2);
+            text = pick(POLITE_OK) + " পেলে " + money(amt) + "।";
+            later(function () { say(curKeeper, pick(KEEPER_OK), false, true); }, 700);
+          } else {
+            d.money = Math.random() < 0.5 ? Math.round(demand * 0.3 / 10) * 10 : 0;
+            d.power = 1; good = d.money > 0;
+            text = pick(POLITE_FAIL) + (d.money > 0 ? " তবু আংশিক মিলল " + money(d.money) + "।" : "");
+            later(function () { say(curKeeper, pick(KEEPER_FAIL), false, true); }, 700);
+          }
+        } else if (act === "force") {
+          say("hero", pick(HERO_FORCE), false, true);
+          var backfire = 0.16 + t.risk * 0.06 - S.power / 500;
+          if (Math.random() < backfire) {
+            d.money = Math.round(demand * 0.8 / 10) * 10; d.heat = rnd(14, 22); d.power = -2; good = false;
+            text = pick(FORCE_BACKFIRE) + " টাকা পেলে " + money(d.money) + "।";
+            later(function () { say(curKeeper, pick(KEEPER_SCARED), false, true); }, 700);
+          } else {
+            d.money = demand; d.heat = rnd(4, 7) + t.risk * 2; d.power = 3;
+            text = pick(FORCE_OK);
+            later(function () { say(curKeeper, pick(KEEPER_SCARED), false, true); }, 700);
+          }
+        } else {
+          say("hero", pick(HERO_SKIP), false, true);
+          d.power = 4; d.heat = -2; text = pick(SKIP_LINES);
+          later(function () { say(curKeeper, "আল্লাহ আপনাকে বড় করুক ভাই! আজ বাঁচলাম!", false, true); }, 700);
+        }
+        applyDeltas(d, t.name);
+        showPanelResult(text, d, good, function () {
+          S.done[curShop] = true;
+          S.turn++;
+          var shops = document.querySelectorAll(".world-shop");
+          var sf = shops[curShop];
+          if (sf && !sf.classList.contains("done")) {
+            sf.classList.add("done");
+            var badge = document.createElement("div");
+            badge.className = "shop-badge";
+            badge.textContent = "✔ আজকের আদায় শেষ";
+            sf.appendChild(badge);
+          }
+          renderDayList();
+          if (street) { street.busy = false; street.active = -1; }
+          closeShopPanel();
+          $("phaseText").textContent = S.turn >= 3 ? "সব দোকান শেষ — এবার বাসায় যাও" : "রাস্তায় আছ · দোকান বাকি " + bn(3 - S.turn) + "টা";
+          afterAction();
+        });
+      }
+
+      /* After any risky action: heat 100 = raid, high heat = possible police chase */
+      function afterAction() {
+        if (S.over) return;
+        if (S.heat >= 100) { startJail("raid", resumeStreet); return; }
+        var chaseChance = S.heat >= 85 ? 0.65 : S.heat >= 65 ? 0.4 : S.heat >= 50 ? 0.22 : 0;
+        if (chaseChance && Math.random() < chaseChance) { startChase(resumeStreet); return; }
+        resumeStreet();
+      }
+
+      function applyDeltas(d, label) {
+        if (d.money) { S.money += d.money; if (d.money > 0) { S.earned += d.money; S.dayEarned += d.money; } }
+        if (d.power) S.power = clamp(S.power + d.power, 0, 100);
+        if (d.heat) { S.heat = clamp(S.heat + d.heat, 0, 100); if (d.heat > 0) S.dayHeat += d.heat; }
+        updateHUD();
+        var parts = [];
+        if (d.money) parts.push((d.money > 0 ? "+" : "") + money(d.money));
+        if (d.power) parts.push("প্রভাব " + (d.power > 0 ? "+" : "") + bn(d.power));
+        if (d.heat) parts.push("নজর " + (d.heat > 0 ? "+" : "") + bn(d.heat));
+        log("<b>" + label + "</b> — " + (parts.length ? parts.join(" · ") : "কোনো পরিবর্তন নেই"));
+      }
+
+      function showResult(text, d, good, onNext) {
+        var box = $("resultBox");
+        if (!box) { onNext(); return; }
+        box.className = "result-box show " + (good ? "good" : "bad");
+        var chips = "";
+        if (d.money) chips += '<span class="delta ' + (d.money > 0 ? "up" : "down") + '">' + (d.money > 0 ? "+" : "") + money(d.money) + "</span>";
+        if (d.power) chips += '<span class="delta ' + (d.power > 0 ? "up" : "down") + '">প্রভাব ' + (d.power > 0 ? "+" : "") + bn(d.power) + "</span>";
+        if (d.heat) chips += '<span class="delta ' + (d.heat > 0 ? "heat-up" : "up") + '">পুলিশের নজর ' + (d.heat > 0 ? "+" : "") + bn(d.heat) + "</span>";
+        box.innerHTML = '<p class="r-text">' + text + '</p><div class="deltas">' + chips + '</div>' +
+          '<button class="btn next-btn" id="btnNext">পরের ধাপ →</button>';
+        $("btnNext").addEventListener("click", onNext);
+        box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      /* ---------- Police chase: আসল দৌড়-ঝাঁপ (লাফিয়ে বাধা পেরোনো) ---------- */
+      var chaseTimer = null;
+      function startChase(onDone) {
+        S.chases++;
+        stopLoop();
+        $("phaseText").textContent = "🚨 পুলিশের ধাওয়া!";
+        stageBox.innerHTML =
+          '<div class="stage chase" id="stage">' +
+            '<span class="stage-label">🚨 পুলিশ পেছনে — লাফিয়ে পালাও!</span>' + bldgsHTML() +
+            '<div class="alley">নিরাপদ গলি →</div>' +
+            '<div class="road"></div><div id="obsBox"></div>' +
+            actorHTML("cop", POLICE, "কনস্টেবল করিম", "0%") +
+            actorHTML("hero", HERO, "তুমি", "24%", { bubbleCls: "r" }) +
+          '</div>';
+        playArea.innerHTML =
+          '<div class="card">' +
+            '<h3 style="margin:0 0 6px;font-family:\'Noto Serif Bengali\',serif">🏃 দৌড় চলছে — বাধা লাফিয়ে পেরোও!</h3>' +
+            '<p class="scene" style="margin-top:0">এবার সত্যিকারের দৌড়! পথে <b>ডাস্টবিন, রিকশা, ব্যারিকেড আর গর্ত</b> — নিচের বড় <b>"⤒ লাফ"</b> বোতাম (বা স্পেসবার) চেপে লাফিয়ে পেরোও। ধাক্কা খেলেই কনস্টেবল করিম ঘাড়ের কাছে চলে আসবে। গলি পর্যন্ত পৌঁছালেই রেহাই!</p>' +
+            '<div class="chase-hud">' +
+              '<div class="meter" id="mSafe"><div class="m-label"><span>🏁 গলি পর্যন্ত অগ্রগতি</span><span id="mSafeVal">০%</span></div><div class="m-bar"><i style="width:0%"></i></div></div>' +
+              '<div class="meter" id="mGap"><div class="m-label"><span>🚓 পুলিশের দূরত্ব</span><span id="mGapVal">নিরাপদ</span></div><div class="m-bar"><i style="width:54%"></i></div></div>' +
+            '</div>' +
+          '</div>';
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        showPad("chase");
+        mode = "chase";
+        heroState.air = 0; heroState.vy = 0;
+        var heroEl = $("hero"), copEl = $("cop"), obsBox = $("obsBox"), stageEl = $("stage");
+        heroEl.classList.add("free", "running");
+        copEl.classList.add("free", "running");
+        var mSafeI = $("mSafe").querySelector("i"), mGapI = $("mGap").querySelector("i");
+        say("cop", pick(POLICE_SHOUT), false, true);
+        later(function () { say("hero", pick(HERO_RUN), false, true); }, 1300);
+
+        var SW = stageEl.clientWidth;
+        var heroX = Math.round(SW * 0.24);
+        var dist = 0, TOTAL = 2500, gap = 54, speed = 215;
+        var obstacles = [], spawnIn = 0.9, shoutT = 0, done = false, last = 0;
+        var TYPES = [
+          { e: "🗑️", label: "ডাস্টবিন", h: 34, w: 36 },
+          { e: "🛺", label: "রিকশা", h: 50, w: 54 },
+          { e: "🕳️", label: "গর্ত", h: 10, w: 46 },
+          { e: "🚧", label: "ব্যারিকেড", h: 42, w: 48 }
+        ];
+
+        function finish(escaped) {
+          if (done) return;
+          done = true;
+          stopLoop();
+          if (escaped) {
+            S.escapes++;
+            applyDeltas({ heat: -12, power: 2 }, "পুলিশের ধাওয়া — লাফিয়ে পালিয়ে বাঁচলে!");
+            playArea.innerHTML =
+              '<div class="card"><h3 style="margin:0 0 6px;font-family:\'Noto Serif Bengali\',serif">😮‍💨 হাঁফ ছেড়ে বাঁচলে!</h3>' +
+              '<p class="scene" style="margin-top:0">সব বাধা লাফিয়ে পেরিয়ে সোজা গলির ভেতর! কনস্টেবল করিম গলির মুখে দাঁড়িয়ে হাঁপাচ্ছে — এই গলিতে ঢোকার সাহস তার নেই। এলাকায় তোমার "দৌড়-লাফের" গল্প ছড়িয়ে পড়ল। পুলিশের নজর কিছুটা কমল।</p>' +
+              '<button class="btn next-btn" id="btnAfterChase">এলাকায় ফিরে যাও →</button></div>';
+            log("<b>ধাওয়া!</b> — বাধা লাফিয়ে পুলিশকে ফাঁকি দিয়ে পালালে।");
+            $("btnAfterChase").addEventListener("click", onDone);
+          } else {
+            log("<b>ধাওয়া!</b> — ধরা পড়ে গেলে!");
+            startJail("chase", onDone);
+          }
+        }
+
+        function tick(ts) {
+          if (mode !== "chase" || done) return;
+          rafId = requestAnimationFrame(tick);
+          var dt = last ? Math.min((ts - last) / 1000, 0.05) : 0.016;
+          last = ts;
+          speed += dt * 3.4;
+          dist += speed * dt;
+          if (heroState.vy > 0 || heroState.air > 0) {
+            heroState.vy -= 1750 * dt;
+            heroState.air += heroState.vy * dt;
+            if (heroState.air <= 0) { heroState.air = 0; heroState.vy = 0; }
+          }
+          heroEl.style.left = heroX + "px";
+          heroEl.style.transform = "translateY(" + (-heroState.air) + "px)";
+          spawnIn -= dt;
+          if (spawnIn <= 0 && dist < TOTAL - 300) {
+            spawnIn = (rnd(95, 140) / 100) * (230 / speed) + 0.5;
+            var tp = TYPES[rnd(0, TYPES.length - 1)];
+            var el = document.createElement("div");
+            el.className = "obstacle";
+            el.innerHTML = '<span class="o-emoji">' + tp.e + '</span><span class="o-label">' + tp.label + '</span>';
+            el.style.left = (SW + 50) + "px";
+            obsBox.appendChild(el);
+            obstacles.push({ x: SW + 50, w: tp.w, h: tp.h, el: el, counted: false });
+          }
+          for (var i = obstacles.length - 1; i >= 0; i--) {
+            var o = obstacles[i];
+            o.x -= speed * dt;
+            o.el.style.left = o.x + "px";
+            if (!o.counted && o.x + o.w < heroX + 6) { o.counted = true; gap = clamp(gap + 3, 0, 100); }
+            if (o.x + o.w > heroX + 10 && o.x < heroX + 44 && heroState.air < o.h) {
+              gap = clamp(gap - 17, 0, 100);
+              heroEl.classList.add("hit");
+              setTimeout(function () { heroEl.classList.remove("hit"); }, 650);
+              say("hero", "উফ্! ধাক্কা খেলাম!", false);
+              o.counted = true;
+              o.el.remove();
+              obstacles.splice(i, 1);
+              continue;
+            }
+            if (o.x < -80) { o.el.remove(); obstacles.splice(i, 1); }
+          }
+          gap = clamp(gap - dt * 1.05, 0, 100);
+          copEl.style.left = Math.max(-72, heroX - 26 - gap * 1.7) + "px";
+          mSafeI.style.width = clamp(dist / TOTAL * 100, 0, 100) + "%";
+          $("mSafeVal").textContent = bn(Math.round(clamp(dist / TOTAL * 100, 0, 100))) + "%";
+          mGapI.style.width = gap + "%";
+          $("mGapVal").textContent = gap > 30 ? "নিরাপদ" : gap > 14 ? "কাছে আসছে!" : "ঘাড়ে নিঃশ্বাস!";
+          shoutT += dt;
+          if (shoutT > 6) {
+            shoutT = 0;
+            if (Math.random() < 0.5) say("cop", pick(POLICE_SHOUT), false, true);
+            else say("hero", pick(HERO_RUN), false, true);
+          }
+          if (dist >= TOTAL) finish(true);
+          else if (gap <= 0) finish(false);
+        }
+        rafId = requestAnimationFrame(tick);
+      }
+
+      /* ---------- Jail (হাজত) ---------- */
+      function startJail(reason, onDone) {
+        S.jailed++;
+        stopLoop();
+        $("phaseText").textContent = "🔒 হাজত";
+        var intro = reason === "raid"
+          ? "ভোররাতে বাসার দরজায় ধাক্কা — রেইড! পুলিশের নজর ১০০ ছুঁয়ে গেছে, এবার আর ফাঁকি দেওয়ার উপায় নেই। জিপে তুলে সোজা থানার হাজতে।"
+          : "দৌড়ে শেষরক্ষা হলো না — গলির মুখে আরেকজন কনস্টেবল দাঁড়িয়ে ছিল! কলার ধরে জিপে তোলা হলো। সোজা থানার হাজত।";
+        stageBox.innerHTML =
+          '<div class="stage jail" id="stage">' +
+            '<span class="stage-label">🔒 থানার হাজত</span>' +
+            '<div class="cell-window"></div><div class="floor"></div><div class="bedroll"></div>' +
+            actorHTML("cellmate", { shirt: "#8a8578", pants: "#5a5344", beard: true, skin: "#a06a3c" }, "সহবন্দি রফিক", "52%") +
+            actorHTML("hero", HERO, "আসামি নম্বর ৪২০", "26%") +
+            '<div class="bars"></div>' +
+            actorHTML("jailer", POLICE, "হাজতের প্রহরী", "80%", { z: 8, bubbleCls: "r" }) +
+          '</div>';
+        var bribeOut = 8000 + S.day * 400;
+        var fine = Math.max(1000, Math.round(S.money * 0.2 / 100) * 100);
+        playArea.innerHTML =
+          '<div class="card event-card">' +
+            '<div class="e-tag">🚔 ধরা পড়েছ!</div>' +
+            '<h3>হাজতে ঠাঁই হলো!</h3>' +
+            '<p>' + intro + '</p>' +
+            '<p class="risk-note">বের হওয়ার উপায় বেছে নাও — প্রতিটারই মূল্য আছে।</p>' +
+            '<div class="choices">' +
+              '<button class="choice" data-jail="bribe" ' + (S.money < bribeOut ? "disabled" : "") + '><span class="c-title">"চা-খরচ" দিয়ে বের হও <span class="tag tag-mid">' + money(bribeOut) + '</span></span><span class="c-desc">ডিউটি অফিসারের পকেট ভারী করলেই দরজা খুলবে। পুলিশের নজর কমে ৩৫-এ নেমে আসবে।' + (S.money < bribeOut ? " (টাকা কম আছে!)" : "") + '</span></button>' +
+              (S.lawyer ? '<button class="choice" data-jail="lawyer"><span class="c-title">উকিলকে ফোন করো <span class="tag tag-safe">রিটেইনার আছে</span></span><span class="c-desc">তোমার উকিল কাগজপত্র নিয়ে হাজির হবেন — বিনা খরচে জামিন। রিটেইনার শেষ হয়ে যাবে।</span></button>' : '') +
+              '<button class="choice" data-jail="serve"><span class="c-title">হাজতেই থেকে যাও (৩ দিন) <span class="tag tag-risk">সময় নষ্ট</span></span><span class="c-desc">৩ দিন হাজতবাস — জরিমানা ' + money(fine) + ', প্রভাব কমবে, তবে নজর নেমে আসবে ২০-এ। ডাল-ভাত ফ্রি।</span></button>' +
+            '</div>' +
+            '<div class="result-box" id="resultBox"></div>' +
+          '</div>';
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        say("jailer", pick(JAILER_LINES), false, true);
+        later(function () { say("cellmate", pick(CELLMATE_LINES), false, true); }, 1500);
+        later(function () { say("hero", "এই ডাল-ভাত খেয়ে ডন হওয়া যাবে না… বের হতেই হবে!", true); }, 3200);
+
+        playArea.querySelectorAll("[data-jail]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var act = b.getAttribute("data-jail");
+            playArea.querySelectorAll("[data-jail]").forEach(function (x) { x.disabled = true; });
+            var text;
+            if (act === "bribe") {
+              applyDeltas({ money: -bribeOut }, "হাজত থেকে ছাড়া — 'চা-খরচ'");
+              S.heat = 35; updateHUD();
+              text = "খামটা হাত বদল হতেই প্রহরীর মুখে হাসি — 'আসলে ভুল বোঝাবুঝি ছিল, যান ভাই!' হাজতের দরজা খুলে গেল। নজর এখন ৩৫।";
+              say("jailer", "ভুল বোঝাবুঝি ছিল ভাই! সাবধানে যাবেন!", false, true);
+            } else if (act === "lawyer") {
+              S.lawyer = false; S.heat = 45; updateHUD();
+              applyDeltas({}, "হাজত থেকে ছাড়া — উকিলের জামিন");
+              text = "উকিল সাহেব কালো কোট পরে হাজির — 'আমার মক্কেল নির্দোষ, কাগজ দেখুন!' দুপুরের আগেই জামিন। প্রহরী স্যালুট দিয়ে দরজা খুলে দিল। নজর এখন ৪৫।";
+              say("jailer", "উকিল সাহেব আছেন যখন… যান, যান!", false, true);
+            } else {
+              var daysLost = Math.min(3, MAXDAY - S.day);
+              applyDeltas({ money: -fine, power: -8 }, "হাজতবাস — " + bn(daysLost) + " দিন");
+              S.day += daysLost; S.heat = 20; updateHUD();
+              text = bn(daysLost) + " দিন হাজতে কাটল। রফিক ভাইয়ের সাথে গল্প জমেছিল বেশ — তবে বাইরে তোমার এলাকায় অন্যরা জায়গা দখলের চেষ্টা করছে। জরিমানা গেল " + money(fine) + "। নজর এখন ২০।";
+              say("cellmate", "আবার দেখা হবে ভাই… আশা করি বাইরে, হাজতে না!", false, true);
+            }
+            log("<b>হাজত</b> — " + text);
+            var box = $("resultBox");
+            box.className = "result-box show good";
+            box.innerHTML = '<p class="r-text">' + text + '</p><button class="btn next-btn" id="btnOut">বেরিয়ে পড়ো →</button>';
+            $("btnOut").addEventListener("click", function () {
+              if (S.day > MAXDAY) { endGame(S.money >= GOAL, "finish"); return; }
+              $("dayTitle").textContent = "দিন " + bn(S.day);
+              updateHUD();
+              onDone();
+            });
+            box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          });
+        });
+      }
+
+      /* ---------- Night phase: থাকা + ব্যবস্থাপনা ---------- */
+      function nightPhase() {
+        stopLoop();
+        $("phaseText").textContent = "রাতের থাকা ও হিসাব";
+        stageBox.innerHTML =
+          '<div class="stage home" id="stage">' +
+            '<span class="stage-label">🌙 রাত — তোমার থাকার ঘর</span>' +
+            '<div class="moonwin"></div>' +
+            '<div class="poster">স্বপ্ন: একদিন<br>বড় "ভাই" হবো!<br><span style="font-weight:400;font-size:.68rem">— দেওয়ালে টাঙানো, মা জানে না</span></div>' +
+            '<div class="floor"></div><div class="bed"></div>' +
+            actorHTML("hero", HERO, "তুমি", "58%") +
+          '</div>';
+        later(function () { say("hero", pick(HOME_LINES), true, true); }, 500);
+        var bribeCost = 2000 + S.day * 150;
+        var goonCost = 4000;
+        var lawyerCost = 6000;
+        var hideCost = 1200;
+        var hotelCost = 3500;
+        playArea.innerHTML =
+          '<div class="card night">' +
+            '<h2>🌙 দিন ' + bn(S.day) + ' শেষ</h2>' +
+            '<p class="sub">আজ আদায় হয়েছে <b>' + money(S.dayEarned) + '</b>। প্রথমে ঠিক করো আজ রাতে <b>কোথায় থাকবে</b> — পুলিশের নজর বেশি থাকলে লুকিয়ে থাকাই বুদ্ধিমানের কাজ:</p>' +
+            '<div>' +
+              '<div class="summary-line"><span>আজকের আদায়</span><b>' + money(S.dayEarned) + '</b></div>' +
+              '<div class="summary-line"><span>মোট ক্যাশ</span><b>' + money(S.money) + '</b></div>' +
+              '<div class="summary-line"><span>পুলিশের নজর</span><b>' + bn(S.heat) + ' / ১০০</b></div>' +
+            '</div>' +
+            '<h3>🛏️ আজ রাতে থাকবে কোথায়?</h3>' +
+            '<div class="shop-list">' +
+              '<button class="shop-item" data-stay="home"><span class="s-icon">🏠</span><span class="s-body"><span class="s-title">নিজের বাসায় ঘুমাও</span><br><span class="s-desc">ফ্রি আর আরাম — তবে রেইড হলে পালানোর পথ নেই। নজর +৩।</span></span><span class="s-price">ফ্রি</span></button>' +
+              '<button class="shop-item" data-stay="hide" ' + (S.money < hideCost ? "disabled" : "") + '><span class="s-icon">🕵️</span><span class="s-body"><span class="s-title">মামার বাসায় লুকিয়ে থাকো</span><br><span class="s-desc">মামা বলেছেন, "ভাগ্নে, ছাদে জায়গা আছে।" পুলিশ খুঁজে পাবে না — নজর −১৪।</span></span><span class="s-price">' + money(hideCost) + '</span></button>' +
+              '<button class="shop-item" data-stay="hotel" ' + (S.money < hotelCost ? "disabled" : "") + '><span class="s-icon">🏨</span><span class="s-body"><span class="s-title">হোটেলে রুম নাও</span><br><span class="s-desc">ছদ্মনামে রুম — "জনাব রহিম উদ্দিন, ব্যবসায়ী"। আরামও হলো, গা-ঢাকাও। নজর −২০, প্রভাব +২।</span></span><span class="s-price">' + money(hotelCost) + '</span></button>' +
+            '</div>' +
+            '<div id="manageBox"></div>' +
+            '<div class="result-box" id="resultBox"></div>' +
+          '</div>';
+
+        playArea.querySelectorAll("[data-stay]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var stay = b.getAttribute("data-stay");
+            playArea.querySelectorAll("[data-stay]").forEach(function (x) { x.disabled = true; });
+            if (stay === "home") {
+              applyDeltas({ heat: 3 }, "রাতে থাকা — নিজের বাসা");
+              say("hero", "নিজের বিছানাই সেরা। দরজাটা শুধু দুইবার লক করে নিই…", true, true);
+              log("<b>থাকা</b> — নিজের বাসায় ঘুমালে।");
+            } else if (stay === "hide") {
+              applyDeltas({ money: -hideCost, heat: -14 }, "রাতে থাকা — মামার বাসায় লুকিয়ে");
+              say("hero", "মামার ছাদ থেকে পুরো এলাকা দেখা যায়। পুলিশের জিপ গেল — আমাকে পেল না!", true, true);
+              log("<b>থাকা</b> — মামার বাসায় লুকিয়ে রাত কাটালে। নজর কমল।");
+            } else {
+              applyDeltas({ money: -hotelCost, heat: -20, power: 2 }, "রাতে থাকা — হোটেল");
+              say("hero", "রিসেপশনে বললাম 'ব্যবসায়ী মানুষ'। এসি চলছে, ভয় নেই!", true, true);
+              log("<b>থাকা</b> — হোটেলে ছদ্মনামে রাত কাটালে।");
+            }
+            showManage(bribeCost, goonCost, lawyerCost);
+          });
+        });
+      }
+
+      function showManage(bribeCost, goonCost, lawyerCost) {
+        var box = $("manageBox");
+        box.innerHTML =
+          '<h3>🤝 রাতের "ব্যবস্থাপনা" (একটা বেছে নাও)</h3>' +
+          '<div class="shop-list">' +
+            '<button class="shop-item" id="shopBribe" ' + (S.money < bribeCost ? "disabled" : "") + '><span class="s-icon">🤝</span><span class="s-body"><span class="s-title">থানায় "চা-খরচ" পাঠাও</span><br><span class="s-desc">ঘুষ — পুলিশের নজর ২৫ কমবে। ওসির পিএস বলেছে, "স্যার খুশি হয়েছেন।"</span></span><span class="s-price">' + money(bribeCost) + '</span></button>' +
+            '<button class="shop-item" id="shopGoon" ' + (S.money < goonCost ? "disabled" : "") + '><span class="s-icon">💪</span><span class="s-body"><span class="s-title">আরেকজন লোক ভাড়া করো</span><br><span class="s-desc">দল বড় হলে প্রতিটা দাবি ১৫% বাড়বে। এখন দলে ' + bn(S.goons) + ' জন ভাড়াটে।</span></span><span class="s-price">' + money(goonCost) + '</span></button>' +
+            '<button class="shop-item" id="shopLawyer" ' + (S.money < lawyerCost || S.lawyer ? "disabled" : "") + '><span class="s-icon">⚖️</span><span class="s-body"><span class="s-title">উকিলের রিটেইনার দাও</span><br><span class="s-desc">' + (S.lawyer ? "উকিল ইতিমধ্যে তোমার পক্ষে আছেন।" : "হাজতে পড়লেও ছাড়িয়ে আনবেন — বিনা খরচে জামিনের ব্যবস্থা।") + '</span></span><span class="s-price">' + money(lawyerCost) + '</span></button>' +
+            '<button class="shop-item" id="shopSkip"><span class="s-icon">🛌</span><span class="s-body"><span class="s-title">কিছুই করো না, ঘুমিয়ে পড়ো</span><br><span class="s-desc">টাকা জমুক। তবে পুলিশের ফাইলও জমছে…</span></span><span class="s-price">ফ্রি</span></button>' +
+          '</div>';
+        box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+        function nightDone(d, text) {
+          applyDeltas(d, "রাতের ব্যবস্থাপনা");
+          var rb = $("resultBox");
+          rb.className = "result-box show good";
+          rb.innerHTML = '<p class="r-text">' + text + '</p><button class="btn next-btn" id="btnNextDay">পরের দিন →</button>';
+          ["shopBribe", "shopGoon", "shopLawyer", "shopSkip"].forEach(function (id) { var el = $(id); if (el) el.disabled = true; });
+          $("btnNextDay").addEventListener("click", advanceDay);
+          rb.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        $("shopBribe").addEventListener("click", function () { nightDone({ money: -bribeCost, heat: -25 }, "খামটা পৌঁছে গেছে। থানার বারান্দায় আজ তোমার নামে কেউ ফিসফিস করল না। নজর অনেকটাই কমল।"); });
+        $("shopGoon").addEventListener("click", function () { S.goons++; nightDone({ money: -goonCost, power: 3 }, "নতুন ছেলেটা লম্বা-চওড়া, কথা কম বলে। দল এখন " + bn(S.goons + 4) + " জনের। কাল থেকে দাবি বাড়বে।"); });
+        $("shopLawyer").addEventListener("click", function () { S.lawyer = true; nightDone({ money: -lawyerCost }, "উকিল সাহেব বললেন, 'চিন্তা করবেন না, কাগজপত্র সব আমার কাছে।' এখন হাজতে পড়লেও জামিনের ব্যবস্থা থাকবে।"); });
+        $("shopSkip").addEventListener("click", function () { nightDone({ heat: 3 }, "ঘুম ভালো হলো। তবে ভোরে শুনলে, থানায় নাকি তোমার নামে নতুন একটা ফাইল খুলেছে।"); });
+      }
+
+      function advanceDay() {
+        var remaining = EVENTS.filter(function (e, i) { return S.usedEvents.indexOf(i) === -1; });
+        if (S.day > 2 && remaining.length && Math.random() < 0.45) {
+          var idx = EVENTS.indexOf(pick(remaining));
+          S.usedEvents.push(idx);
+          showEvent(EVENTS[idx]);
+          return;
+        }
+        proceedDay();
+      }
+
+      function showEvent(ev) {
+        stopLoop();
+        $("phaseText").textContent = "হঠাৎ ঘটনা";
+        hideStage();
+        var html = '<div class="card event-card"><div class="e-tag">' + ev.tag + '</div><h3>' + ev.title + '</h3><p>' + ev.text + '</p><div class="choices">';
+        ev.choices.forEach(function (c, i) {
+          html += '<button class="choice" data-ev="' + i + '"><span class="c-title">' + c.t + '</span><span class="c-desc">' + c.d + '</span></button>';
+        });
+        html += '</div><div class="result-box" id="resultBox"></div></div>';
+        playArea.innerHTML = html;
+        playArea.querySelectorAll("[data-ev]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var c = ev.choices[+b.getAttribute("data-ev")];
+            playArea.querySelectorAll("[data-ev]").forEach(function (x) { x.disabled = true; });
+            var d = c.fx();
+            applyDeltas(d, ev.title);
+            showResult(d.msg, d, !(d.heat >= 14 || d.power <= -8), function () {
+              if (S.heat >= 100) { startJail("raid", proceedDay); return; }
+              proceedDay();
+            });
+          });
+        });
+      }
+
+      function proceedDay() {
+        S.day++;
+        setHeadline();
+        if (S.day > MAXDAY) { endGame(S.money >= GOAL, "finish"); return; }
+        if (S.power >= 70) { S.heat = clamp(S.heat + 3, 0, 100); }
+        updateHUD();
+        startDay();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      /* ---------- Endings ---------- */
+      function rankOf() {
+        if (S.money >= GOAL) return "শহরের গডফাদার";
+        if (S.money >= 500000) return "এলাকার ডন";
+        if (S.money >= 200000) return "ওয়ার্ডের ভাই";
+        if (S.money >= 50000) return "পাড়ার ছোট ভাই";
+        return "উঠতি চাঁদাবাজ";
+      }
+
+      function endGame(won, reason) {
+        S.over = true;
+        clearTimers();
+        stopLoop();
+        document.body.classList.remove("playing");
+        if (document.fullscreenElement && document.exitFullscreen) { document.exitFullscreen().catch(function () {}); }
+        hideStage();
+        show("screenEnd");
+        var emoji, title, text;
+        if (won) {
+          emoji = "👑"; title = "লক্ষ্য পূরণ — তুমি এখন কিংবদন্তি!";
+          text = "৩০ দিনে " + money(S.earned) + " আদায়! এলাকায় তোমার নামে পোস্টার, বিয়েবাড়িতে সামনের সারির চেয়ার। পুলিশের ধাওয়ায় দৌড়েছ " + bn(S.chases) + " বার, হাজতেও গেছ " + bn(S.jailed) + " বার — তবু টিকে আছ। কিন্তু মনে রেখো — পুলিশের ফাইলটা এখনো খোলা, আর ইতিহাস বলে, এই গল্পের শেষ পাতাটা প্রায় সবসময়ই একরকম হয়…";
+        } else {
+          emoji = "🌇"; title = "৩০ দিন শেষ — সাম্রাজ্য অর্ধেক গড়া";
+          text = "লক্ষ্য ছিল " + money(GOAL) + ", জমল " + money(S.money) + "। হাজতে কেটেছে কিছুদিন, পুলিশের ধাওয়াও খেয়েছ " + bn(S.chases) + " বার — তবু শেষ দিন পর্যন্ত টিকে ছিলে, এটাই বা কম কী! 'ডন' হতে এখনো অনেক পথ। আবার চেষ্টা করবে?";
+        }
+        $("endEmoji").textContent = emoji;
+        $("endTitle").textContent = title;
+        $("endRank").textContent = "পদবি: " + rankOf();
+        $("endText").textContent = text;
+        $("endStats").innerHTML =
+          '<div class="summary-line"><span>মোট আদায় (৩০ দিনে)</span><b>' + money(S.earned) + '</b></div>' +
+          '<div class="summary-line"><span>শেষ ক্যাশ</span><b>' + money(S.money) + '</b></div>' +
+          '<div class="summary-line"><span>প্রভাব</span><b>' + bn(S.power) + ' / ১০০</b></div>' +
+          '<div class="summary-line"><span>পুলিশের নজর</span><b>' + bn(S.heat) + ' / ১০০</b></div>' +
+          '<div class="summary-line"><span>ভাড়াটে লোক</span><b>' + bn(S.goons) + ' জন</b></div>' +
+          '<div class="summary-line"><span>পুলিশের ধাওয়া খেয়েছ</span><b>' + bn(S.chases) + ' বার (পালিয়েছ ' + bn(S.escapes) + ' বার)</b></div>' +
+          '<div class="summary-line"><span>হাজতে গেছ</span><b>' + bn(S.jailed) + ' বার</b></div>';
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      /* ---------- Wire up ---------- */
+      $("btnStart").addEventListener("click", startGame);
+      $("btnRestart").addEventListener("click", startGame);
+
+      /* ---------- Fullscreen 16:9 ---------- */
+      function toggleFullscreen() {
+        var btn = $("btnFullscreen");
+        if (document.fullscreenElement) {
+          if (document.exitFullscreen) document.exitFullscreen().catch(function () {});
+          return;
+        }
+        var el = document.documentElement;
+        var req = el.requestFullscreen || el.webkitRequestFullscreen;
+        if (!req) { if (btn) btn.textContent = "⛶ ফোন আড়াআড়ি ধরো — ১৬:৯"; return; }
+        try {
+          var p = req.call(el);
+          if (p && p.then) p.then(function () {
+            if (screen.orientation && screen.orientation.lock) {
+              screen.orientation.lock("landscape").catch(function () {});
+            }
+          }).catch(function () {});
+        } catch (err) {}
+      }
+      var fsBtn = $("btnFullscreen");
+      if (fsBtn) fsBtn.addEventListener("click", toggleFullscreen);
+      document.addEventListener("fullscreenchange", function () {
+        var b = $("btnFullscreen");
+        if (b) b.textContent = document.fullscreenElement ? "⛶ ফুল স্ক্রিন বন্ধ করো" : "⛶ ফুল স্ক্রিন · ১৬:৯";
+        /* Stage world width depends on stage width — rebuild street after resize settles */
+        setTimeout(function () {
+          if (mode === "street" && S && !S.over) startStreet();
+        }, 350);
+      });
+      window.addEventListener("orientationchange", function () {
+        setTimeout(function () {
+          if (mode === "street" && S && !S.over) startStreet();
+        }, 350);
+      });
+
+      /* ---------- Joystick (টাচ) & keyboard ---------- */
+      var joyEl = $("joy"), joyKnob = $("joyKnob");
+      function joySet(e) {
+        var r = joyEl.getBoundingClientRect();
+        var ox = e.clientX - (r.left + r.width / 2);
+        var oy = e.clientY - (r.top + r.height / 2);
+        var max = 34, len = Math.sqrt(ox * ox + oy * oy);
+        if (len > max) { ox = ox / len * max; oy = oy / len * max; }
+        joy.dx = clamp(ox / max, -1, 1);
+        joyKnob.style.transform = "translate(" + ox + "px," + oy + "px)";
+      }
+      function joyReset() {
+        joy.dx = 0; joy.pid = null;
+        var k = $("joyKnob");
+        if (k) k.style.transform = "translate(0px,0px)";
+      }
+      joyEl.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        joy.pid = e.pointerId;
+        try { joyEl.setPointerCapture(e.pointerId); } catch (err) {}
+        joySet(e);
+      });
+      joyEl.addEventListener("pointermove", function (e) { if (joy.pid === e.pointerId) joySet(e); });
+      joyEl.addEventListener("pointerup", function (e) { if (joy.pid === e.pointerId) joyReset(); });
+      joyEl.addEventListener("pointercancel", function () { joyReset(); });
+      joyEl.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+      $("padJump").addEventListener("pointerdown", function (e) { e.preventDefault(); doJump(); });
+      $("padJump").addEventListener("click", function () { doJump(); });
+      document.addEventListener("keydown", function (e) {
+        if (!mode) return;
+        if (e.code === "ArrowLeft" || e.code === "KeyA") { keys.left = true; e.preventDefault(); }
+        else if (e.code === "ArrowRight" || e.code === "KeyD") { keys.right = true; e.preventDefault(); }
+        else if (e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space") { doJump(); e.preventDefault(); }
+      });
+      document.addEventListener("keyup", function (e) {
+        if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false;
+        if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = false;
+      });
+      setHeadline();
+      startHeadlineTicker();
+    </script>
+  </body>
+</html>
