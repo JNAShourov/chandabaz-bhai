@@ -97,9 +97,11 @@
       }
       body.playing .fs-bar, body.playing .day-banner { position: relative; z-index: 30; }
       body.playing .stage-label { top: 84px; }
-      /* দোকানের প্যানেল নিচের ভাসমান বোতামগুলোর ওপরে শেষ হবে — টাকা নেওয়ার
-         অপশনগুলো যেন কখনো কোনো ওভারলের পেছনে ঢাকা না পড়ে, সবসময় টাচ করা যায় */
-      body.playing .shop-panel { top: 92px; bottom: 122px; max-height: none; }
+      /* দোকানের প্যানেল এখন বড় বাক্সে, স্ক্রিনের মাঝখানে ওঠে — লেখা বড়, পড়তে
+         সুবিধা; সিলেক্ট করলেই আবার চলে যায়। নিচের ভাসমান বোতাম (জয়স্টিক/লাফ)
+         প্যানেলের ওপরে ভাসে (pad z-60), আর প্যানেলের নিচে বাড়তি প্যাডিং থাকে
+         যাতে স্ক্রল করে একদম নিচে নামলেও শেষ অপশনটা বোতামের পেছনে না পড়ে */
+      body.playing .shop-panel { top: 90px; bottom: 10px; max-height: none; padding-bottom: 96px; }
       /* রাস্তায় থাকা অবস্থায় নিচের বড় কার্ড/ডায়েরি ওভারলে পুরোপুরি বন্ধ —
          ওগুলো সিনের নিচের অংশ আর দোকান-প্যানেলের বোতাম ঢেকে দিত, টাচ আটকে যেত।
          দিনের হিসাব HUD আর ফেজ-লাইনেই দেখা যায়; ডায়েরি রাতের পালায় ফিরে আসে */
@@ -581,27 +583,47 @@
       #padBox.chase .pad-row { justify-content: center; }
       #padBox.chase .pad-jump { width: min(320px, 82%); height: 56px; border-radius: 16px; font-size: 1.15rem; background: var(--red); border-color: var(--red-deep); box-shadow: 0 4px 0 var(--red-deep); }
 
-      /* ---------- Shop side panel (দোকানের সামনে গেলেই ওঠে) ---------- */
+      /* ---------- Shop panel: বড় প্যানেল (দোকানের সামনে গেলেই স্ক্রিনের মাঝে ওঠে) ---------- */
       .shop-panel {
-        position: absolute; top: 42px; right: 8px; z-index: 12;
-        width: min(270px, 76%); max-height: calc(100% - 52px); overflow-y: auto;
-        background: var(--paper); color: var(--ink); border: 1.5px solid var(--line);
-        border-radius: 14px; box-shadow: var(--shadow); padding: 12px;
-        transform: translateX(calc(100% + 16px)); transition: transform .3s ease;
+        position: absolute; top: 10px; left: 50%; z-index: 12;
+        width: min(580px, 94%); max-height: calc(100% - 20px); overflow-y: auto;
+        background: var(--paper); color: var(--ink); border: 2px solid var(--line);
+        border-radius: 16px; box-shadow: 0 18px 44px rgba(0, 0, 0, .35); padding: 18px 20px;
+        opacity: 0; transform: translate(-50%, 16px); pointer-events: none;
+        transition: opacity .25s ease, transform .25s ease;
       }
-      .shop-panel.show { transform: translateX(0); }
-      .shop-panel h4 { margin: 0 0 2px; font-family: "Noto Serif Bengali", serif; font-size: 1.02rem; }
-      .shop-panel .sp-who { font-size: .8rem; color: var(--ink-soft); margin: 0 0 8px; }
-      .shop-panel .demand { padding: 7px 10px; margin-bottom: 8px; }
-      .shop-panel .demand .d-amt { font-size: 1.12rem; }
-      .shop-panel .scene { font-size: .88rem; margin: 0 0 4px; }
-      .shop-panel .risk-note { font-size: .78rem; }
-      .shop-panel .ask { font-weight: 700; font-size: .92rem; margin: 10px 0 0; }
-      .shop-panel .choices { gap: 8px; margin-top: 8px; }
-      .shop-panel .choice { padding: 9px 11px; border-radius: 10px; }
-      .shop-panel .choice .c-title { font-size: .94rem; }
-      .shop-panel .choice .c-desc { font-size: .82rem; }
-      .shop-panel .result-box { margin-top: 10px; padding: 10px 12px; }
+      .shop-panel.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+      .shop-panel h4 { margin: 0 0 3px; font-family: "Noto Serif Bengali", serif; font-size: 1.4rem; line-height: 1.25; }
+      .shop-panel .sp-who { font-size: .95rem; color: var(--ink-soft); margin: 0 0 10px; }
+      .shop-panel .demand { padding: 10px 14px; margin-bottom: 10px; }
+      .shop-panel .demand .d-label { font-size: .98rem; }
+      .shop-panel .demand .d-amt { font-size: 1.55rem; }
+      .shop-panel .scene { font-size: 1.04rem; margin: 0 0 6px; }
+      .shop-panel .risk-note { font-size: .9rem; }
+      .shop-panel .ask { font-weight: 700; font-size: 1.08rem; margin: 12px 0 0; }
+      .shop-panel .choices { gap: 10px; margin-top: 10px; }
+      .shop-panel .choice { padding: 13px 15px; border-radius: 12px; }
+      .shop-panel .choice .c-title { font-size: 1.12rem; }
+      .shop-panel .choice .c-title .tag { font-size: .85rem; }
+      .shop-panel .choice .c-desc { font-size: .95rem; }
+      .shop-panel .result-box { margin-top: 12px; padding: 13px 15px; font-size: 1rem; }
+      .shop-panel .result-box .delta { font-size: .92rem; }
+      .shop-panel .next-btn { font-size: 1.05rem; padding: 12px 18px; }
+      /* খাটো ল্যান্ডস্কেপ ফোনে প্যানেলটা একটু কমপ্যাক্ট — বেশি কন্টেন্ট একসাথে দেখা যায় */
+      @media (orientation: landscape) and (max-height: 540px) {
+        .shop-panel { padding: 12px 16px; }
+        .shop-panel h4 { font-size: 1.22rem; }
+        .shop-panel .sp-who { font-size: .88rem; margin-bottom: 7px; }
+        .shop-panel .demand { padding: 8px 12px; margin-bottom: 8px; }
+        .shop-panel .demand .d-amt { font-size: 1.3rem; }
+        .shop-panel .scene { font-size: .96rem; }
+        .shop-panel .risk-note { font-size: .84rem; }
+        .shop-panel .ask { font-size: 1rem; margin-top: 9px; }
+        .shop-panel .choices { gap: 8px; margin-top: 8px; }
+        .shop-panel .choice { padding: 10px 12px; }
+        .shop-panel .choice .c-title { font-size: 1.04rem; }
+        .shop-panel .choice .c-desc { font-size: .88rem; }
+      }
 
       /* ---------- Shopkeeper inside the shop ---------- */
       .actor.inside { bottom: 63px; width: 54px; z-index: 3; }
@@ -638,6 +660,7 @@
         .stage.chase .road, .stage.chase .bldgs { animation: none; }
         .stat .bar i { transition: none; }
         .bubble { transition: none; }
+        .shop-panel { transition: none; }
         .ticker .headline { transition: none; }
       }
     </style>
@@ -666,10 +689,10 @@
       <section class="screen active" id="screenIntro">
         <div class="card intro">
           <h2>কাহিনীটা এমন…</h2>
-          <p>তুমি এলাকার উঠতি চাঁদাবাজ। পকেটে মাত্র <b>৳৫০০</b>, মাথায় বড় হওয়ার স্বপ্ন। আগামী <b>৩০ দিনে</b> দোকানপাট, ঠিকাদার আর ব্যবসায়ীদের কাছ থেকে "সালামি" আদায় করে গড়ে তুলতে হবে তোমার সাম্রাজ্য। এবার সত্যিকারের টাচ কন্ট্রোল — বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টেনে নিজে হেঁটে-দৌড়ে দোকানে যাবে, ডান পাশের বোতামে <b>লাফ</b> দেবে। দোকানদার থাকবে দোকানের <b>ভেতরে</b> — দোকানের সামনে দাঁড়ালেই পাশে প্যানেল উঠবে, সেখান থেকে টাচ করে ঠিক করবে টাকা কীভাবে নেবে। সবার মাথার ওপর ভাসবে মজার সব কথা, আর পুলিশ তাড়া করলে রাস্তার বাধা লাফিয়ে পেরিয়ে সত্যি সত্যি পালাতে হবে! গেমের সিন এখন <b>সত্যিকারের ফুল স্ক্রিনে</b> — ফোন সোজা ধরলেও, আড়াআড়ি ধরলেও সিনটা পুরো পর্দা জুড়ে থাকবে, অর্ধেক-অর্ধেক ব্যান্ডে না। জয়স্টিক আর লাফ বোতাম কোনো ব্যাকগ্রাউন্ড-বার ছাড়াই সিনের ওপর ভাসবে — গেমের কিছুই ঢাকবে না, আর দোকানের প্যানেলের সব অপশন সবসময় টাচ করা যাবে। চাইলে উপরের "⛶ ফুল স্ক্রিন" বোতামে ব্রাউজারটাও ফুল স্ক্রিন করে নেওয়া যাবে।</p>
+          <p>তুমি এলাকার উঠতি চাঁদাবাজ। পকেটে মাত্র <b>৳৫০০</b>, মাথায় বড় হওয়ার স্বপ্ন। আগামী <b>৩০ দিনে</b> দোকানপাট, ঠিকাদার আর ব্যবসায়ীদের কাছ থেকে "সালামি" আদায় করে গড়ে তুলতে হবে তোমার সাম্রাজ্য। এবার সত্যিকারের টাচ কন্ট্রোল — বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টেনে নিজে হেঁটে-দৌড়ে দোকানে যাবে, ডান পাশের বোতামে <b>লাফ</b> দেবে। দোকানদার থাকবে দোকানের <b>ভেতরে</b> — দোকানের সামনে দাঁড়ালেই স্ক্রিনের মাঝখানে বড় প্যানেল উঠবে, সেখান থেকে টাচ করে ঠিক করবে টাকা কীভাবে নেবে। সবার মাথার ওপর ভাসবে মজার সব কথা, আর পুলিশ তাড়া করলে রাস্তার বাধা লাফিয়ে পেরিয়ে সত্যি সত্যি পালাতে হবে! গেমের সিন এখন <b>সত্যিকারের ফুল স্ক্রিনে</b> — ফোন সোজা ধরলেও, আড়াআড়ি ধরলেও সিনটা পুরো পর্দা জুড়ে থাকবে, অর্ধেক-অর্ধেক ব্যান্ডে না। জয়স্টিক আর লাফ বোতাম কোনো ব্যাকগ্রাউন্ড-বার ছাড়াই সিনের ওপর ভাসবে — গেমের কিছুই ঢাকবে না, আর দোকানের প্যানেলের সব অপশন সবসময় টাচ করা যাবে। চাইলে উপরের "⛶ ফুল স্ক্রিন" বোতামে ব্রাউজারটাও ফুল স্ক্রিন করে নেওয়া যাবে।</p>
           <p>কিন্তু সাবধান — বেশি বাড়াবাড়ি করলেই পুলিশের নজর বাড়বে। নজর বাড়লেই ধাওয়া, ধরা পড়লেই সোজা হাজত। তখন ঘুষের টাকাও কাজে আসবে না… নাকি আসবে?</p>
           <ul class="rules">
-            <li><span class="n">১</span><div><b>জয়স্টিক টেনে নিজে হেঁটে-দৌড়ে দোকানে যাও</b><span>প্রতিদিন ৩টা দোকান/ব্যবসা। বাম পাশের জয়স্টিক আঙুল দিয়ে টানো — অল্প টানলে হাঁটা, পুরো টানলে দৌড়। ডান পাশের সবুজ বোতামে লাফ। দোকানদার থাকবে দোকানের ভেতরে; সামনে দাঁড়ালেই ডান পাশে প্যানেল উঠবে — সেখান থেকে টাচ করে বেছে নাও টাকা কীভাবে নেবে: ভদ্রভাবে বলবে, চাপ দেবে, নাকি ছেড়ে দেবে। মাথার ওপরের কথাগুলো শোনো — দোকানদারের মুখের হাসি আর মনের কথা, দুটোই দেখা যাবে। সব তথ্য (দিন, ক্যাশ, প্রভাব, পুলিশের নজর) সবসময় স্ক্রিনের উপরে থাকবে।</span></div></li>
+            <li><span class="n">১</span><div><b>জয়স্টিক টেনে নিজে হেঁটে-দৌড়ে দোকানে যাও</b><span>প্রতিদিন ৩টা দোকান/ব্যবসা। বাম পাশের জয়স্টিক আঙুল দিয়ে টানো — অল্প টানলে হাঁটা, পুরো টানলে দৌড়। ডান পাশের সবুজ বোতামে লাফ। দোকানদার থাকবে দোকানের ভেতরে; সামনে দাঁড়ালেই স্ক্রিনের মাঝখানে বড় প্যানেল উঠবে — সেখান থেকে টাচ করে বেছে নাও টাকা কীভাবে নেবে: ভদ্রভাবে বলবে, চাপ দেবে, নাকি ছেড়ে দেবে। মাথার ওপরের কথাগুলো শোনো — দোকানদারের মুখের হাসি আর মনের কথা, দুটোই দেখা যাবে। সব তথ্য (দিন, ক্যাশ, প্রভাব, পুলিশের নজর) সবসময় স্ক্রিনের উপরে থাকবে।</span></div></li>
             <li><span class="n">২</span><div><b>পুলিশ তাড়া করলে লাফিয়ে পালাও!</b><span>নজর বেশি বাড়লেই পুলিশ পেছনে লাগবে। তখন সত্যিকারের দৌড় — পথে ডাস্টবিন, রিকশা, গর্ত! "লাফ" বোতাম (বা স্পেসবার) চেপে লাফিয়ে পেরোতে হবে। ধাক্কা খেলেই পুলিশ ঘাড়ের কাছে — ধরা পড়লেই হাজত।</span></div></li>
             <li><span class="n">৩</span><div><b>রাতে থাকা আর ঘুষ-বাণিজ্য</b><span>রাতে কোথায় থাকবে ঠিক করো — নিজের বাসা, মামার বাসায় লুকিয়ে, নাকি হোটেলে। থানায় "চা-খরচ" দিলে নজর কমে, গুন্ডা ভাড়া করলে আদায় বাড়ে, উকিল রাখলে হাজত থেকেও ছাড়া পাওয়ার সুযোগ থাকে।</span></div></li>
             <li><span class="n">৪</span><div><b>লক্ষ্য: ৳১০ লাখ</b><span>৩০ দিনে ৳১০ লাখ জমাতে পারলে তুমি এলাকার অবিসংবাদিত ডন। হাজতে দিন কাটালে সময় নষ্ট — হিসাব মিলিয়ে চলো।</span></div></li>
@@ -1130,7 +1153,7 @@
         $("hero").classList.add("free");
         playArea.innerHTML =
           '<div class="card"><h3 style="margin:0 0 6px;font-family:\'Noto Serif Bengali\',serif">🗺️ আজকের এলাকা — জয়স্টিক টেনে যাও!</h3>' +
-          '<p class="scene" style="margin-top:0">নিচের বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টানো — অল্প টানলে <b>হাঁটা</b>, পুরো টানলে <b>দৌড়</b>! ডান পাশের সবুজ বোতামে <b>লাফ</b>। দোকানদার দোকানের <b>ভেতরে</b> থাকবে — সামনে দাঁড়ালেই ডান পাশে <b>প্যানেল</b> উঠবে, সেখান থেকে টাচ করে বেছে নেবে টাকা কীভাবে নেবে।</p>' +
+          '<p class="scene" style="margin-top:0">নিচের বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টানো — অল্প টানলে <b>হাঁটা</b>, পুরো টানলে <b>দৌড়</b>! ডান পাশের সবুজ বোতামে <b>লাফ</b>। দোকানদার দোকানের <b>ভেতরে</b> থাকবে — সামনে দাঁড়ালেই স্ক্রিনের মাঝখানে বড় <b>প্যানেল</b> উঠবে, সেখান থেকে টাচ করে বেছে নেবে টাকা কীভাবে নেবে।</p>' +
           '<div id="dayList"></div>' +
           '<p class="risk-note">৩টা দোকান শেষ হলে রাস্তার একদম ডানদিকে 🏠 বাসার দরজায় যাও — সেখান থেকে রাতের পালা শুরু হবে।</p></div>';
         renderDayList();
