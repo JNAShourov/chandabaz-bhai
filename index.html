@@ -75,30 +75,53 @@
       }
       .wrap { max-width: 980px; margin: 0 auto; padding: 0 12px 40px; width: 100%; }
       /* Playing mode: masthead/ticker hide; the whole game fits exactly one screen —
-         compact HUD + bars on top, the stage flexes to fill the middle, and the
-         choices/diary strip below scrolls internally, so the playable scene
-         (road, shops, hero) is never pushed off-screen */
+         slim HUD on top, the scene fills everything below it full-bleed, and the
+         top bars / choice cards / diary float over the scene as overlays that
+         scroll internally, so the playable scene is never squeezed or pushed off */
       body.playing .masthead, body.playing .ticker { display: none; }
       body.playing .wrap {
         max-width: 100%; height: 100dvh; max-height: 100dvh;
         display: flex; flex-direction: column; padding: 0; overflow: hidden;
       }
-      body.playing #screenGame.active { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+      body.playing #screenGame.active { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; position: relative; }
       body.playing .fs-bar, body.playing .day-banner, body.playing #padBox { flex: 0 0 auto; }
-      body.playing #stageBox { flex: 1 1 auto; min-height: 120px; display: flex; flex-direction: column; }
+      /* আসল ফুল স্ক্রিন: সিনটা HUD-এর নিচের পুরো জায়গাটা জুড়ে থাকে — পোর্ট্রেট,
+         ল্যান্ডস্কেপ, সব স্ক্রিনেই। উপরের বার আর নিচের কার্ড/ডায়েরি সিনের ওপর
+         ভাসে, সিনের উচ্চতা কেড়ে নিয়ে অর্ধেক-ব্যান্ড বানায় না */
+      body.playing #stageBox { position: absolute; inset: 0; z-index: 0; }
       body.playing #stageBox:empty { display: none; }
-      body.playing .stage { flex: 1 1 auto; height: auto; min-height: 0; max-height: none; aspect-ratio: auto; margin-bottom: 0; }
-      body.playing #playArea { flex: 0 1 auto; max-height: 30%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-      body.playing #stageBox:empty ~ #playArea { flex: 1 1 auto; max-height: none; }
-      body.playing .log { flex: 0 1 auto; max-height: 16%; overflow-y: auto; }
+      body.playing .stage {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        min-height: 0; max-height: none; aspect-ratio: auto;
+        margin: 0; border: none; border-radius: 0; box-shadow: none;
+      }
+      body.playing .fs-bar, body.playing .day-banner { position: relative; z-index: 30; }
+      body.playing .stage-label { top: 84px; }
+      body.playing .shop-panel { top: 88px; max-height: calc(100% - 98px); }
+      body.playing #playArea {
+        position: relative; z-index: 30; margin-top: auto; flex: 0 1 auto;
+        max-height: 48%; overflow-y: auto; -webkit-overflow-scrolling: touch;
+        padding: 0 8px;
+      }
+      body.playing #stageBox:empty ~ #playArea { max-height: 94%; }
+      body.playing #padBox:not([hidden]) ~ #playArea .card { margin-bottom: 124px; }
+      body.playing #padBox:not([hidden]) ~ .log { margin-bottom: 124px; }
+      body.playing #playArea .card {
+        background: color-mix(in srgb, var(--paper) 93%, transparent);
+        backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      }
+      body.playing .log { position: relative; z-index: 30; flex: 0 1 auto; max-height: 18%; overflow-y: auto; margin-top: 6px; }
       /* Playing: slim top chrome — ছোট বার, যাতে সিনটাই স্ক্রিনের বেশিরভাগ পায় */
-      body.playing .fs-bar { padding: 4px 8px 0; }
+      body.playing .fs-bar { padding: 6px 8px 0; }
       body.playing .btn-fs { font-size: .78rem; padding: 4px 12px; min-height: 1.9rem; box-shadow: 0 2px 0 #a67c0a; }
-      body.playing .fs-hint { font-size: .7rem; }
-      body.playing .day-banner { margin: 3px 10px 5px; }
-      body.playing .day-banner h2 { font-size: 1.05rem; }
+      body.playing .fs-hint { display: none; }
+      body.playing .day-banner {
+        margin: 5px 8px 0; padding: 3px 12px; border-radius: 999px;
+        background: rgba(15, 13, 9, .55);
+        backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+      }
+      body.playing .day-banner h2 { font-size: 1.02rem; }
       body.playing .day-banner .phase { font-size: .8rem; }
-      @media (max-height: 620px) { body.playing .fs-hint { display: none; } }
       /* Playing: টাচ প্যাড স্ক্রিনের নিচে ভাসমান ওভারলে — স্টেজের জায়গা খায় না,
          অর্ধ-স্বচ্ছ বলে পেছনের সিনও দেখা যায় */
       body.playing #padBox {
@@ -112,10 +135,7 @@
         pointer-events: auto;
       }
       body.playing .pad-hint { display: none; }
-      /* Wide screens keep the cinematic 16:9 stage; phones let it fill the space */
-      @media (min-width: 700px) and (min-height: 541px) {
-        body.playing .stage { aspect-ratio: 16 / 9; flex: 0 1 auto; }
-      }
+      /* সব স্ক্রিনেই সিন ফুল-ব্লিড — আলাদা 16:9 লেটারবক্স বাক্স আর নেই */
       body.playing { background: #0f0d09; }
       @media (prefers-color-scheme: light) { body.playing { background: #1a1710; } }
       /* Fullscreen bar */
@@ -134,7 +154,7 @@
       @media (prefers-color-scheme: dark) { .fs-hint { color: var(--ink-soft); } }
       @media (max-width: 560px) {
         .wrap { padding: 0 6px 28px; }
-        body.playing .wrap { padding: 0 0 16px; }
+        body.playing .wrap { padding: 0; }
         .fs-hint { font-size: .74rem; }
       }
 
@@ -271,8 +291,8 @@
         .day-banner { margin: 2px 10px 4px; }
         .day-banner h2 { font-size: 1.1rem; }
         .shopfront.world-shop { transform: translateX(-50%) scale(.85); transform-origin: 50% 100%; }
-        body.playing #playArea { max-height: 22%; }
-        body.playing .log { max-height: 10%; }
+        body.playing #playArea { max-height: 58%; }
+        body.playing .log { max-height: 14%; }
         body.playing .card { padding: 12px 14px; }
         .joy { width: 84px; height: 84px; }
         .joy-knob { left: 22px; top: 22px; width: 40px; height: 40px; }
@@ -511,7 +531,7 @@
       .end-card p { color: var(--ink-soft); }
 
       /* Playing mode: content below the 16:9 stage keeps side padding */
-      body.playing #playArea, body.playing .log { margin-left: 8px; margin-right: 8px; }
+      body.playing .log { margin-left: 8px; margin-right: 8px; }
       body.playing #padBox { margin-left: 8px; margin-right: 8px; }
       @media (orientation: landscape) and (max-height: 540px) {
         body.playing #padBox { margin-left: 0; margin-right: 0; }
@@ -637,7 +657,7 @@
       <section class="screen active" id="screenIntro">
         <div class="card intro">
           <h2>কাহিনীটা এমন…</h2>
-          <p>তুমি এলাকার উঠতি চাঁদাবাজ। পকেটে মাত্র <b>৳৫০০</b>, মাথায় বড় হওয়ার স্বপ্ন। আগামী <b>৩০ দিনে</b> দোকানপাট, ঠিকাদার আর ব্যবসায়ীদের কাছ থেকে "সালামি" আদায় করে গড়ে তুলতে হবে তোমার সাম্রাজ্য। এবার সত্যিকারের টাচ কন্ট্রোল — বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টেনে নিজে হেঁটে-দৌড়ে দোকানে যাবে, ডান পাশের বোতামে <b>লাফ</b> দেবে। দোকানদার থাকবে দোকানের <b>ভেতরে</b> — দোকানের সামনে দাঁড়ালেই পাশে প্যানেল উঠবে, সেখান থেকে টাচ করে ঠিক করবে টাকা কীভাবে নেবে। সবার মাথার ওপর ভাসবে মজার সব কথা, আর পুলিশ তাড়া করলে রাস্তার বাধা লাফিয়ে পেরিয়ে সত্যি সত্যি পালাতে হবে! গেমের সিন এখন <b>ফোনের ফুল স্ক্রিনে ১৬:৯ রেশিওতে</b> — ফোন আড়াআড়ি ধরলেই পুরো পর্দা জুড়ে খেলা যাবে, উপরে "⛶ ফুল স্ক্রিন" বোতামও আছে।</p>
+          <p>তুমি এলাকার উঠতি চাঁদাবাজ। পকেটে মাত্র <b>৳৫০০</b>, মাথায় বড় হওয়ার স্বপ্ন। আগামী <b>৩০ দিনে</b> দোকানপাট, ঠিকাদার আর ব্যবসায়ীদের কাছ থেকে "সালামি" আদায় করে গড়ে তুলতে হবে তোমার সাম্রাজ্য। এবার সত্যিকারের টাচ কন্ট্রোল — বাম পাশের <b>জয়স্টিক</b> আঙুল দিয়ে টেনে নিজে হেঁটে-দৌড়ে দোকানে যাবে, ডান পাশের বোতামে <b>লাফ</b> দেবে। দোকানদার থাকবে দোকানের <b>ভেতরে</b> — দোকানের সামনে দাঁড়ালেই পাশে প্যানেল উঠবে, সেখান থেকে টাচ করে ঠিক করবে টাকা কীভাবে নেবে। সবার মাথার ওপর ভাসবে মজার সব কথা, আর পুলিশ তাড়া করলে রাস্তার বাধা লাফিয়ে পেরিয়ে সত্যি সত্যি পালাতে হবে! গেমের সিন এখন <b>সত্যিকারের ফুল স্ক্রিনে</b> — ফোন সোজা ধরলেও, আড়াআড়ি ধরলেও সিনটা পুরো পর্দা জুড়ে থাকবে, অর্ধেক-অর্ধেক ব্যান্ডে না। উপরের বার আর নিচের কার্ড সিনের ওপর ভাসবে, জায়গা খাবে না। চাইলে উপরের "⛶ ফুল স্ক্রিন" বোতামে ব্রাউজারটাও ফুল স্ক্রিন করে নেওয়া যাবে।</p>
           <p>কিন্তু সাবধান — বেশি বাড়াবাড়ি করলেই পুলিশের নজর বাড়বে। নজর বাড়লেই ধাওয়া, ধরা পড়লেই সোজা হাজত। তখন ঘুষের টাকাও কাজে আসবে না… নাকি আসবে?</p>
           <ul class="rules">
             <li><span class="n">১</span><div><b>জয়স্টিক টেনে নিজে হেঁটে-দৌড়ে দোকানে যাও</b><span>প্রতিদিন ৩টা দোকান/ব্যবসা। বাম পাশের জয়স্টিক আঙুল দিয়ে টানো — অল্প টানলে হাঁটা, পুরো টানলে দৌড়। ডান পাশের সবুজ বোতামে লাফ। দোকানদার থাকবে দোকানের ভেতরে; সামনে দাঁড়ালেই ডান পাশে প্যানেল উঠবে — সেখান থেকে টাচ করে বেছে নাও টাকা কীভাবে নেবে: ভদ্রভাবে বলবে, চাপ দেবে, নাকি ছেড়ে দেবে। মাথার ওপরের কথাগুলো শোনো — দোকানদারের মুখের হাসি আর মনের কথা, দুটোই দেখা যাবে। সব তথ্য (দিন, ক্যাশ, প্রভাব, পুলিশের নজর) সবসময় স্ক্রিনের উপরে থাকবে।</span></div></li>
@@ -653,8 +673,8 @@
       <!-- GAME -->
       <section class="screen" id="screenGame">
         <div class="fs-bar">
-          <button class="btn-fs" id="btnFullscreen" type="button">⛶ ফুল স্ক্রিন · ১৬:৯</button>
-          <span class="fs-hint">ফোন আড়াআড়ি (ল্যান্ডস্কেপ) ধরলেই<br>পুরো স্ক্রিনে ১৬:৯-তে খেলা যাবে</span>
+          <button class="btn-fs" id="btnFullscreen" type="button">⛶ ফুল স্ক্রিন</button>
+          <span class="fs-hint">সিনটা এখন এমনিতেই পুরো স্ক্রিন জুড়ে থাকে —<br>এই বোতামে ব্রাউজারও ফুল স্ক্রিন হবে</span>
         </div>
         <div class="day-banner">
           <h2 id="dayTitle">দিন ১</h2>
@@ -1743,7 +1763,7 @@
         }
         var el = document.documentElement;
         var req = el.requestFullscreen || el.webkitRequestFullscreen;
-        if (!req) { if (btn) btn.textContent = "⛶ ফোন আড়াআড়ি ধরো — ১৬:৯"; return; }
+        if (!req) { if (btn) btn.textContent = "⛶ ফুল স্ক্রিন সাপোর্ট নেই"; return; }
         try {
           var p = req.call(el);
           if (p && p.then) p.then(function () {
@@ -1757,7 +1777,7 @@
       if (fsBtn) fsBtn.addEventListener("click", toggleFullscreen);
       document.addEventListener("fullscreenchange", function () {
         var b = $("btnFullscreen");
-        if (b) b.textContent = document.fullscreenElement ? "⛶ ফুল স্ক্রিন বন্ধ করো" : "⛶ ফুল স্ক্রিন · ১৬:৯";
+        if (b) b.textContent = document.fullscreenElement ? "⛶ ফুল স্ক্রিন বন্ধ করো" : "⛶ ফুল স্ক্রিন";
         /* Stage world width depends on stage width — rebuild street after resize settles */
         setTimeout(function () {
           if (mode === "street" && S && !S.over) startStreet();
