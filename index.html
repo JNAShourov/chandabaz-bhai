@@ -88,9 +88,30 @@
       body.playing #stageBox { flex: 1 1 auto; min-height: 120px; display: flex; flex-direction: column; }
       body.playing #stageBox:empty { display: none; }
       body.playing .stage { flex: 1 1 auto; height: auto; min-height: 0; max-height: none; aspect-ratio: auto; margin-bottom: 0; }
-      body.playing #playArea { flex: 0 1 auto; max-height: 42%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+      body.playing #playArea { flex: 0 1 auto; max-height: 30%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
       body.playing #stageBox:empty ~ #playArea { flex: 1 1 auto; max-height: none; }
-      body.playing .log { flex: 0 1 auto; max-height: 20%; overflow-y: auto; }
+      body.playing .log { flex: 0 1 auto; max-height: 16%; overflow-y: auto; }
+      /* Playing: slim top chrome — ছোট বার, যাতে সিনটাই স্ক্রিনের বেশিরভাগ পায় */
+      body.playing .fs-bar { padding: 4px 8px 0; }
+      body.playing .btn-fs { font-size: .78rem; padding: 4px 12px; min-height: 1.9rem; box-shadow: 0 2px 0 #a67c0a; }
+      body.playing .fs-hint { font-size: .7rem; }
+      body.playing .day-banner { margin: 3px 10px 5px; }
+      body.playing .day-banner h2 { font-size: 1.05rem; }
+      body.playing .day-banner .phase { font-size: .8rem; }
+      @media (max-height: 620px) { body.playing .fs-hint { display: none; } }
+      /* Playing: টাচ প্যাড স্ক্রিনের নিচে ভাসমান ওভারলে — স্টেজের জায়গা খায় না,
+         অর্ধ-স্বচ্ছ বলে পেছনের সিনও দেখা যায় */
+      body.playing #padBox {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+        margin: 0; padding: 0 10px calc(6px + env(safe-area-inset-bottom));
+        background: transparent; pointer-events: none;
+      }
+      body.playing #padBox .pad-row {
+        background: rgba(20, 16, 8, .55); border-color: rgba(255, 255, 255, .16);
+        backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+        pointer-events: auto;
+      }
+      body.playing .pad-hint { display: none; }
       /* Wide screens keep the cinematic 16:9 stage; phones let it fill the space */
       @media (min-width: 700px) and (min-height: 541px) {
         body.playing .stage { aspect-ratio: 16 / 9; flex: 0 1 auto; }
@@ -157,11 +178,12 @@
         padding: 8px 8px; background: color-mix(in srgb, var(--bg) 88%, transparent);
         backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       }
-      body.playing .hud { background: rgba(15,13,9,.92); margin: 0; border-bottom: 1px solid rgba(255,255,255,.12); flex: 0 0 auto; }
+      body.playing .hud { background: rgba(15,13,9,.92); margin: 0; padding: 5px 6px; border-bottom: 1px solid rgba(255,255,255,.12); flex: 0 0 auto; }
       body.playing .hud .stat { box-shadow: none; }
-      body.playing .stat { padding: 5px 9px 6px; }
-      body.playing .stat .label { font-size: .64rem; }
-      body.playing .stat .value { font-size: .98rem; }
+      body.playing .stat { padding: 4px 8px 5px; }
+      body.playing .stat .label { font-size: .6rem; }
+      body.playing .stat .value { font-size: .9rem; }
+      body.playing .stat .bar { height: 4px; margin-top: 3px; }
       .stat {
         background: var(--paper); border: 1.5px solid var(--line); border-radius: 12px;
         padding: 8px 10px 9px; box-shadow: var(--shadow);
@@ -249,16 +271,12 @@
         .day-banner { margin: 2px 10px 4px; }
         .day-banner h2 { font-size: 1.1rem; }
         .shopfront.world-shop { transform: translateX(-50%) scale(.85); transform-origin: 50% 100%; }
-        body.playing #playArea { max-height: 30%; }
-        body.playing .log { max-height: 14%; }
+        body.playing #playArea { max-height: 22%; }
+        body.playing .log { max-height: 10%; }
         body.playing .card { padding: 12px 14px; }
-        #padBox { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; margin: 0; padding: 0 10px calc(6px + env(safe-area-inset-bottom)); background: transparent; pointer-events: none; }
-        #padBox .pad-row, #padBox .pad-hint { pointer-events: auto; }
-        #padBox .pad-row { background: rgba(20,16,8,.82); backdrop-filter: blur(6px); border-color: rgba(255,255,255,.18); }
-        #padBox .pad-hint { display: none; }
-        .joy { width: 92px; height: 92px; }
-        .joy-knob { left: 24px; top: 24px; width: 44px; height: 44px; }
-        .pad-jump { width: 68px; height: 68px; }
+        .joy { width: 84px; height: 84px; }
+        .joy-knob { left: 22px; top: 22px; width: 40px; height: 40px; }
+        .pad-jump { width: 60px; height: 60px; }
       }
       /* Browser fullscreen: stage + controls fill the screen */
       :fullscreen .wrap, :-webkit-full-screen .wrap { max-width: 100%; padding: 0; }
@@ -504,10 +522,10 @@
       .pad-row {
         display: flex; align-items: center; justify-content: space-between; gap: 12px;
         background: var(--paper); border: 1.5px solid var(--line); border-radius: 16px;
-        box-shadow: var(--shadow); padding: 10px 14px;
+        box-shadow: var(--shadow); padding: 6px 10px;
       }
       .joy {
-        position: relative; width: 116px; height: 116px; border-radius: 50%;
+        position: relative; width: 88px; height: 88px; border-radius: 50%;
         background: radial-gradient(circle at 50% 42%, var(--bg) 0 56%, var(--gold-soft) 100%);
         border: 2px solid var(--line); touch-action: none; cursor: grab;
         user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
@@ -515,24 +533,24 @@
       .joy::before { content: "◀"; position: absolute; top: 50%; left: 7px; transform: translateY(-50%); font-size: .78rem; color: var(--ink-soft); }
       .joy::after { content: "▶"; position: absolute; top: 50%; right: 7px; transform: translateY(-50%); font-size: .78rem; color: var(--ink-soft); }
       .joy-knob {
-        position: absolute; left: 32px; top: 32px; width: 52px; height: 52px; border-radius: 50%;
+        position: absolute; left: 24px; top: 24px; width: 40px; height: 40px; border-radius: 50%;
         background: var(--red); border: 2px solid var(--red-deep); color: #fff;
         box-shadow: 0 4px 10px rgba(0,0,0,.3), inset 0 2px 5px rgba(255,255,255,.35);
-        display: grid; place-items: center; font-size: .82rem; font-weight: 700; pointer-events: none;
+        display: grid; place-items: center; font-size: .68rem; font-weight: 700; pointer-events: none;
       }
-      .joy-label { text-align: center; font-size: .72rem; font-weight: 700; color: var(--ink-soft); margin-top: 5px; }
+      .joy-label { text-align: center; font-size: .66rem; font-weight: 700; color: var(--ink-soft); margin-top: 3px; }
       .pad-jump {
         font-family: inherit; font-weight: 700; cursor: pointer; flex: 0 0 auto;
-        width: 84px; height: 84px; border-radius: 50%;
+        width: 62px; height: 62px; border-radius: 50%;
         background: var(--green); border: 2px solid var(--green-deep); color: #fff;
-        font-size: 1rem; line-height: 1.2; box-shadow: 0 5px 0 var(--green-deep);
+        font-size: .85rem; line-height: 1.2; box-shadow: 0 4px 0 var(--green-deep);
         touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
       }
       .pad-jump:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--green-deep); }
-      .pad-hint { text-align: center; font-size: .8rem; color: var(--ink-soft); margin: 6px 2px 0; }
+      .pad-hint { text-align: center; font-size: .72rem; color: var(--ink-soft); margin: 6px 2px 0; }
       #padBox.chase .joy-wrap { display: none; }
       #padBox.chase .pad-row { justify-content: center; }
-      #padBox.chase .pad-jump { width: min(320px, 82%); height: 68px; border-radius: 16px; font-size: 1.3rem; background: var(--red); border-color: var(--red-deep); box-shadow: 0 5px 0 var(--red-deep); }
+      #padBox.chase .pad-jump { width: min(320px, 82%); height: 56px; border-radius: 16px; font-size: 1.15rem; background: var(--red); border-color: var(--red-deep); box-shadow: 0 4px 0 var(--red-deep); }
 
       /* ---------- Shop side panel (দোকানের সামনে গেলেই ওঠে) ---------- */
       .shop-panel {
@@ -1757,7 +1775,7 @@
         var r = joyEl.getBoundingClientRect();
         var ox = e.clientX - (r.left + r.width / 2);
         var oy = e.clientY - (r.top + r.height / 2);
-        var max = 34, len = Math.sqrt(ox * ox + oy * oy);
+        var max = Math.max(16, r.width / 2 - 20), len = Math.sqrt(ox * ox + oy * oy);
         if (len > max) { ox = ox / len * max; oy = oy / len * max; }
         joy.dx = clamp(ox / max, -1, 1);
         joyKnob.style.transform = "translate(" + ox + "px," + oy + "px)";
